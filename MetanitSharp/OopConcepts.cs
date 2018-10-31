@@ -37,6 +37,9 @@ namespace MetanitSharp
                     case 'm':
                         printModifiers();
                         break;
+                    case 'p':
+                        usingProperties();
+                        break;
                     case 'x': return;
                 }
                 Console.ReadKey();
@@ -51,6 +54,7 @@ namespace MetanitSharp
             Console.WriteLine("R - структуры внутри классов и классы внутри структур");
             Console.WriteLine("A - массивы внутри классов и структур");
             Console.WriteLine("M - вывод полей с разными модификаторами доступа");
+            Console.WriteLine("P - вывод значений свойств объекта");
             Console.WriteLine("X - выход из раздела");
         }
 
@@ -428,5 +432,119 @@ namespace MetanitSharp
         }
 
         #endregion
+
+        static void usingProperties()
+        {
+            var person = new PersonWithProps();
+            person.Name = "Lucy";
+            person.Age = 20;
+            person.Secret = -1;
+            person.Country = "Middle Earth";
+
+            person.DisplayInfo();
+
+            person.Age = 10;
+
+            person.CountryCode = 25;
+
+            person.DisplayInfo();
+        }
+
+        class PersonWithProps
+        {
+            private string name;
+            public string Name
+            {
+                get
+                {
+                    return name;
+                }
+
+                set
+                {
+                    name = value;
+                }
+            }
+
+            private int age;
+            public int Age
+            {
+                set
+                {
+                    if (value < 18)
+                    {
+                        Console.WriteLine("Возраст должен быть больше 17");
+                    }
+                    else
+                    {
+                        age = value;
+                    }
+                }
+                get { return age; }
+            }
+
+            private string birthday;
+            // свойство только для чтения
+            public string Birthday
+            {
+                get
+                {
+                    return birthday;
+                }
+            }
+
+            private int secret;
+            // свойство только для записи
+            public int Secret
+            {
+                set
+                {
+                    secret = value;
+                }
+            }
+
+            private int money;
+            public int Money
+            {
+                get
+                {
+                    return money;
+                }
+
+                private set
+                {
+                    money = value;
+                }
+            }
+
+            public string Country { get; set; }
+
+            public int CountryCode { get; set; } = 23;
+
+            public string State { private set; get; }
+
+            public string City { get; } = "Moscow";
+
+            private string street;
+
+            // эквивалентно public string Street { get { return street; } }
+            public string Street => street;
+
+            public PersonWithProps()
+            {
+                street = "Lenina";
+                State = "Alabama";
+                Money = 1000;
+                birthday = "1 Jan 1970";
+            }
+
+            public void DisplayInfo()
+            {
+                Console.WriteLine($"Name {Name} age {Age} birthday {Birthday}");
+                Console.WriteLine($"Secret is {secret}");
+                Console.WriteLine($"Count of money {Money}$");
+                Console.WriteLine($"{CountryCode} {Country}, {State} state, {City}, {Street} street");
+            }
+        }
     }
 }
