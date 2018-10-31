@@ -25,6 +25,7 @@ namespace MetanitSharp
                         BasicConcepts.Run();
                         break;
                     case 'o':
+                        OopConcepts.Run();
                         break;
                 }
             }
