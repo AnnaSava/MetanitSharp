@@ -40,6 +40,18 @@ namespace MetanitSharp
                     case 'p':
                         usingProperties();
                         break;
+                    case 't':
+                        printStatic();
+                        break;
+                    case 'n':
+                        printConst();
+                        break;
+                    case 'o':
+                        usingOperatorsOverloading();
+                        break;
+                    case 'u':
+                        checkingNulls();
+                        break;
                     case 'x': return;
                 }
                 Console.ReadKey();
@@ -55,6 +67,10 @@ namespace MetanitSharp
             Console.WriteLine("A - массивы внутри классов и структур");
             Console.WriteLine("M - вывод полей с разными модификаторами доступа");
             Console.WriteLine("P - вывод значений свойств объекта");
+            Console.WriteLine("T - работа со статическими методами");
+            Console.WriteLine("N - вывод констант");
+            Console.WriteLine("O - перегрузка операторов");
+            Console.WriteLine("U - проверка на null");
             Console.WriteLine("X - выход из раздела");
         }
 
@@ -360,7 +376,7 @@ namespace MetanitSharp
 
         struct NumStruct
         {
-            public int[] integers;            
+            public int[] integers;
         }
 
         class NumClass
@@ -432,6 +448,8 @@ namespace MetanitSharp
         }
 
         #endregion
+
+        #region Properties
 
         static void usingProperties()
         {
@@ -546,5 +564,180 @@ namespace MetanitSharp
                 Console.WriteLine($"{CountryCode} {Country}, {State} state, {City}, {Street} street");
             }
         }
+
+        #endregion
+
+        #region Static and Constants
+
+        static void printStatic()
+        {
+            var sc1 = new StaticConstructor();
+            var sc2 = new StaticConstructor();
+            var sc3 = new StaticConstructor();
+            var sc4 = new StaticConstructor();
+            var sc5 = new StaticConstructor();
+            var sc6 = new StaticConstructor();
+            var sc7 = new StaticConstructor();
+
+            StaticConstructor.DisplayCounter();
+        }
+
+        class StaticConstructor
+        {
+            static StaticConstructor()
+            {
+                Console.WriteLine("Создан первый объект со статическим конструктором");
+            }
+
+            private static int counter = 0;
+            public StaticConstructor()
+            {
+                counter++;
+            }
+
+            public static void DisplayCounter()
+            {
+                Console.WriteLine($"Создано {counter} объектов StaticConstructor");
+            }
+        }
+
+        static void printConst()
+        {
+            const int hundred = 100;
+            Console.WriteLine($"Локальная константа {hundred}");
+
+            Console.WriteLine($"Константа Пи в классе {MathLib.PI}");
+
+            Console.WriteLine($"Статическое поле только для чтения, первое обращение {MathLib.M}");
+
+            var math = new MathLib(45);
+            Console.WriteLine($"Нестатическое поле только для чтения {math.K}");
+
+            Console.WriteLine($"Статическое поле только для чтения после создания объекта {MathLib.M}");
+        }
+
+        class MathLib
+        {
+            public const double PI = 3.141;
+            public const double E = 2.81;
+
+            public readonly int K = 23;
+
+            public static readonly int M = 101;
+
+            public MathLib(int _k)
+            {
+                Console.WriteLine($"Нестатическое поле только для чтения - конструктор {K}");
+                K = _k; // поле для чтения может быть инициализировано или изменено в конструкторе после компиляции
+            }
+
+            static MathLib()
+            {
+                Console.WriteLine($"Статическое поле только для чтения - конструктор {M}");
+                M = 102;
+            }
+        }
+
+        #endregion
+
+        #region Operators
+
+        static void usingOperatorsOverloading()
+        {
+            Counter c1 = new Counter { Value = 23 };
+            Counter c2 = new Counter { Value = 45 };
+            bool result = c1 > c2;
+            Console.WriteLine(result); // false
+
+            Counter c3 = c1 + c2;
+            Console.WriteLine(c3.Value);  // 23 + 45 = 68
+
+            int d = c1 + 27; // 50
+            Console.WriteLine(d);
+
+            Counter cPreInc = new Counter() { Value = 10 };
+            Console.WriteLine($"{cPreInc.Value}");      // 10
+            Console.WriteLine($"{(++cPreInc).Value}");  // 20
+            Console.WriteLine($"{cPreInc.Value}");      // 20
+
+            Counter cPostInc = new Counter() { Value = 10 };
+            Console.WriteLine($"{cPostInc.Value}");      // 10
+            Console.WriteLine($"{(cPostInc++).Value}");  // 10
+            Console.WriteLine($"{cPostInc.Value}");      // 20
+
+            CounterTrueFalse counter = new CounterTrueFalse() { Value = 0 };
+            if (counter)
+                Console.WriteLine(true);
+            else
+                Console.WriteLine(false);
+        }
+
+        class Counter
+        {
+            public int Value { get; set; }
+
+            public static Counter operator +(Counter c1, Counter c2)
+            {
+                return new Counter { Value = c1.Value + c2.Value };
+            }
+            public static int operator +(Counter c1, int val)
+            {
+                return c1.Value + val;
+            }
+            public static bool operator >(Counter c1, Counter c2)
+            {
+                return c1.Value > c2.Value;
+            }
+            public static bool operator <(Counter c1, Counter c2)
+            {
+                return c1.Value < c2.Value;
+            }
+            public static Counter operator ++(Counter c1)
+            {
+                return new Counter { Value = c1.Value + 10 };
+            }
+        }
+
+        class CounterTrueFalse
+        {
+            public int Value { get; set; }
+
+            public static bool operator true(CounterTrueFalse c1)
+            {
+                return c1.Value != 0;
+            }
+            public static bool operator false(CounterTrueFalse c1)
+            {
+                return c1.Value == 0;
+            }
+        }
+
+        #endregion
+
+        #region Nulls
+
+        static void checkingNulls()
+        {
+            User user = new User();
+            string companyName = user?.Phone?.Company?.Name ?? "не установлено";
+            Console.WriteLine(companyName);
+        }
+
+        class User
+        {
+            public Phone Phone { get; set; }
+        }
+
+        class Phone
+        {
+            public Company Company { get; set; }
+        }
+
+        class Company
+        {
+            public string Name { get; set; }
+        }
+
+        #endregion
     }
 }
