@@ -52,6 +52,12 @@ namespace MetanitSharp
                     case 'u':
                         checkingNulls();
                         break;
+                    case 'i':
+                        usingIndexers();
+                        break;
+                    case 'h':
+                        usingInheritanceAndCasting();
+                        break;
                     case 'x': return;
                 }
                 Console.ReadKey();
@@ -71,6 +77,8 @@ namespace MetanitSharp
             Console.WriteLine("N - вывод констант");
             Console.WriteLine("O - перегрузка операторов");
             Console.WriteLine("U - проверка на null");
+            Console.WriteLine("I - использование индексаторов");
+            Console.WriteLine("H - наследование классов и преобразование типов");
             Console.WriteLine("X - выход из раздела");
         }
 
@@ -739,5 +747,25 @@ namespace MetanitSharp
         }
 
         #endregion
+
+        #region Indexer
+
+        static void usingIndexers()
+        {
+            IndexerDemo.Display();
+            IndexerAttrName.Display();
+            IndexerMany.Display();        
+            IndexerOverloading.Display();
+        }
+
+        #endregion
+
+        static void usingInheritanceAndCasting()
+        {
+            InheritanceDemo.Display();
+            InheritanceConstructors.Display();
+            CastingTypes.Display();
+            CastingOverload.Display();
+        }
     }
 }
