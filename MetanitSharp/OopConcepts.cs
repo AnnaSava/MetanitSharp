@@ -58,6 +58,9 @@ namespace MetanitSharp
                     case 'h':
                         usingInheritanceAndCasting();
                         break;
+                    case 'v':
+                        usingVirtual();
+                        break;
                     case 'x': return;
                 }
                 Console.ReadKey();
@@ -79,6 +82,7 @@ namespace MetanitSharp
             Console.WriteLine("U - проверка на null");
             Console.WriteLine("I - использование индексаторов");
             Console.WriteLine("H - наследование классов и преобразование типов");
+            Console.WriteLine("V - использование виртуальных методов");
             Console.WriteLine("X - выход из раздела");
         }
 
@@ -767,5 +771,13 @@ namespace MetanitSharp
             CastingTypes.Display();
             CastingOverload.Display();
         }
+
+        static void usingVirtual()
+        {
+            VirtualDemo.Display();
+            HidingDemo.Display();
+            VirtualVsHidingProperties.Display();
+        }
+
     }
 }

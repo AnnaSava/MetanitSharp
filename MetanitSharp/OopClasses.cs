@@ -447,4 +447,261 @@ namespace MetanitSharp
             }
         }
     }
+
+    class VirtualDemo
+    {
+        public static void Display()
+        {
+            Console.WriteLine("Виртуальные методы");
+            Person p1 = new Person("Bill", "Gates");
+            p1.Display(); // вызов метода Display из класса Person
+
+            Employee p2 = new Employee("Tom", "Smith", "Microsoft");
+            p2.Display(); // вызов метода Display из класса Employee
+
+            Client p3 = new Client("Anna", "Domini", "Eternity");
+            p3.Display();
+
+            Employee p4 = new Employee("Tom", "Gates", "Gigasoft");
+            p4.Display();
+
+            Console.WriteLine("Виртуальные свойства");
+            LongCredit credit = new LongCredit { Sum = 6000 };
+            credit.Sum = 490;
+            Console.WriteLine(credit.Sum);
+        }
+
+        class Person
+        {
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public Person(string firstName, string lastName)
+            {
+                FirstName = firstName;
+                LastName = lastName;
+            }
+            public virtual void Display()
+            {
+                Console.WriteLine($"{FirstName} {LastName}");
+            }
+        }
+        class Employee : Person
+        {
+            public string Company { get; set; }
+            public Employee(string firstName, string lastName, string company)
+                : base(firstName, lastName)
+            {
+                Company = company;
+            }
+
+            public override void Display()
+            {
+                Console.WriteLine($"{FirstName} {LastName} работает в {Company}");
+            }
+        }
+
+        class Client : Person
+        {
+            public string Company { get; set; }
+
+            public Client(string lastName, string firstName, string company)
+                    : base(firstName, lastName)
+            {
+                Company = company;
+            }
+
+            public override void Display()
+            {
+                base.Display();
+                Console.WriteLine($"работает в {Company}");
+            }
+        }
+
+        class EmployeeSealed : Person
+        {
+            public string Company { get; set; }
+
+            public EmployeeSealed(string firstName, string lastName, string company)
+                        : base(firstName, lastName)
+            {
+                Company = company;
+            }
+
+            public override sealed void Display()
+            {
+                Console.WriteLine($"{FirstName} {LastName} работает в {Company}");
+            }
+        }
+
+        class Credit
+        {
+            public virtual decimal Sum { get; set; }
+        }
+        class LongCredit : Credit
+        {
+            private decimal sum;
+            public override decimal Sum
+            {
+                get
+                {
+                    return sum;
+                }
+                set
+                {
+                    if (value > 1000)
+                    {
+                        sum = value;
+                    }
+                }
+            }
+        }
+    }
+
+    class HidingDemo
+    {
+        public static void Display()
+        {
+            Person bob = new Person("Bob", "Robertson");
+            bob.Display();      // Bob Robertson
+
+            Employee tom = new Employee("Tom", "Smith", "Microsoft");
+            tom.Display();      // Tom Smith работает в Microsoft
+
+            PersonProp p = new PersonProp();
+            p.Name = "Ann";
+
+            EmployeeProp e = new EmployeeProp();
+            e.Name = "Mike";
+
+            Console.WriteLine($"{p.Name}");
+            Console.WriteLine($"{e.Name}");
+
+            ExampleBase exb = new ExampleBase();
+            Console.WriteLine($"x={exb.x} G={ExampleBase.G}");
+
+            ExampleDerived exd = new ExampleDerived();
+            Console.WriteLine($"x={exd.x} G={ExampleDerived.G}");
+        }
+
+        class Person
+        {
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public Person(string firstName, string lastName)
+            {
+                FirstName = firstName;
+                LastName = lastName;
+            }
+
+            public void Display()
+            {
+                Console.WriteLine($"{FirstName} {LastName}");
+            }
+        }
+
+        class Employee : Person
+        {
+            public string Company { get; set; }
+            public Employee(string firstName, string lastName, string company)
+                    : base(firstName, lastName)
+            {
+                Company = company;
+            }
+            public new void Display()
+            {
+                Console.WriteLine($"{FirstName} {LastName} работает в {Company}");
+            }
+        }
+
+        class PersonProp
+        {
+            protected string name;
+            public string Name
+            {
+                get { return name; }
+                set { name = value; }
+            }
+        }
+        class EmployeeProp : PersonProp
+        {
+            public new string Name
+            {
+                get { return "Employee " + base.Name; }
+                set { name = value; }
+            }
+        }
+
+        class ExampleBase
+        {
+            public readonly int x = 10;
+            public const int G = 5;
+        }
+        class ExampleDerived : ExampleBase
+        {
+            public new readonly int x = 20;
+            public new const int G = 15;
+        }
+    }
+
+    class VirtualVsHidingProperties
+    {
+        public static void Display()
+        {
+            ExampleBase exb = new ExampleBase();
+            ExampleDerived exd = new ExampleDerived();
+
+            exb.InfoNew = "New info base";
+            exb.InfoVirtual = "Virtual info base";
+            exb.DisplayInfo();
+
+            exd.InfoNew = "New info derived";
+            exd.InfoVirtual = "Virtual info derived";
+            exd.DisplayInfo();
+            exd.DisplayInfoDerived();
+        }
+
+        class ExampleBase
+        {
+            protected string infoNew;
+            public string InfoNew
+            {
+                get { return infoNew; }
+                set { infoNew = value; }
+            }
+
+            protected string infoVirtual;
+            public virtual string InfoVirtual
+            {
+                get { return infoVirtual; }
+                set { infoVirtual = value; }
+            }
+
+            public void DisplayInfo()
+            {
+                Console.WriteLine($"From base class: \t{InfoNew}");
+                Console.WriteLine($"From base class: \t{InfoVirtual}");
+            }
+        }
+
+        class ExampleDerived : ExampleBase
+        {
+            public new string InfoNew
+            {
+                get { return "Information: " + base.InfoNew; }
+                set { infoNew = value; }
+            }
+
+            public override string InfoVirtual
+            {
+                get { return "Information: " + base.infoVirtual; }
+                set { infoVirtual = value; }
+            }
+
+            public void DisplayInfoDerived()
+            {
+                Console.WriteLine($"From derived class: \t{InfoNew}");
+                Console.WriteLine($"From derived class: \t{InfoVirtual}");
+            }
+        }
+    }
 }
