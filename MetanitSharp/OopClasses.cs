@@ -704,4 +704,257 @@ namespace MetanitSharp
             }
         }
     }
+
+    class BindingDemo
+    {
+        public static void Display()
+        {
+            Person tom = new Employee("Tom", "Smith", "Microsoft");
+            tom.Display();      // Tom Smith
+
+            tom.DisplayVirtual();      // Tom Smith работает в Microsoft
+        }
+
+        class Person
+        {
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public Person(string firstName, string lastName)
+            {
+                FirstName = firstName;
+                LastName = lastName;
+            }
+
+            public void Display()
+            {
+                Console.WriteLine($"{FirstName} {LastName}");
+            }
+
+            public virtual void DisplayVirtual()
+            {
+                Console.WriteLine($"{FirstName} {LastName}");
+            }
+        }
+
+        class Employee : Person
+        {
+            public string Company { get; set; }
+            public Employee(string firstName, string lastName, string company)
+                    : base(firstName, lastName)
+            {
+                Company = company;
+            }
+            public new void Display()
+            {
+                Console.WriteLine($"{FirstName} {LastName} работает в {Company}");
+            }
+
+            public override void DisplayVirtual()
+            {
+                Console.WriteLine($"{FirstName} {LastName} работает в {Company}");
+            }
+        }
+    }
+
+    class AbstractDemo
+    {
+        public static void Display()
+        {
+            Client client = new Client("Tom", 500);
+            Employee employee = new Employee("Bob", "Apple");
+            client.Display();
+            employee.Display();
+
+
+            Person client2 = new Client("Ben", 600);
+            Person employee2 = new Employee("Jack", "Операционист");
+
+            client2.Display();
+            employee2.Display();
+        }
+
+        abstract class Person
+        {
+            public string Name { get; set; }
+
+            public Person(string name)
+            {
+                Name = name;
+            }
+
+            public abstract void Display();
+        }
+
+        class Client : Person
+        {
+            public int Sum { get; set; }    // сумма на счету
+
+            public Client(string name, int sum)
+                : base(name)
+            {
+                Sum = sum;
+            }
+            public override void Display()
+            {
+                Console.WriteLine($"{Name} имеет счет на сумму {Sum}");
+            }
+        }
+
+        class Employee : Person
+        {
+            public string Position { get; set; } // должность
+
+            public Employee(string name, string position)
+                : base(name)
+            {
+                Position = position;
+            }
+
+            public override void Display()
+            {
+                Console.WriteLine($"{Position} {Name}");
+            }
+        }
+    }
+
+    class AbstractFigure
+    {
+        public static void Display()
+        {
+            var rect = new Rectangle(2, 4);
+            Console.WriteLine($"Периметр {rect.Perimeter()}");
+            Console.WriteLine($"Площадь {rect.Area()}");
+        }
+
+        // абстрактный класс фигуры
+        abstract class Figure
+        {
+            // абстрактный метод для получения периметра
+            public abstract float Perimeter();
+            // абстрактный метод для получения площади
+            public abstract float Area();
+        }
+        // производный класс прямоугольника
+        class Rectangle : Figure
+        {
+            public float Width { get; set; }
+            public float Height { get; set; }
+
+            public Rectangle(float width, float height)
+            {
+                this.Width = width;
+                this.Height = height;
+            }
+            // переопределение получения периметра
+            public override float Perimeter()
+            {
+                return Width * 2 + Height * 2;
+            }
+            // переопрелеление получения площади
+            public override float Area()
+            {
+                return Width * Height;
+            }
+        }
+    }
+
+    class ObjectDemo
+    {
+        public static void Display()
+        {
+            toString();
+            getHashCode();
+            getType();
+            equals();
+        }
+
+        static void toString()
+        {
+            Person person = new Person { Name = "Tom" };
+            Console.WriteLine(person.ToString()); // выведет название класса Person
+
+            Clock clock = new Clock { Hours = 15, Minutes = 34, Seconds = 53 };
+            Console.WriteLine(clock.ToString()); // выведет 15:34:53  
+
+            Clock clock2 = new Clock { Hours = 14, Minutes = 24, Seconds = 51 };
+            Console.WriteLine(clock2); // выведет 14:24:51
+        }
+
+        static void getHashCode()
+        {
+            Person person = new Person { Name = "Tom" };
+            Person person2 = new Person { Name = "Tom" };
+
+            Console.WriteLine($"Hash p1={person.GetHashCode()} p2={person2.GetHashCode()}");
+
+            person.Name = "Bob";
+            Console.WriteLine($"Hash p1={person.GetHashCode()} p2={person2.GetHashCode()}");
+
+            Person person3 = person;
+
+            Console.WriteLine($"Hash p1={person.GetHashCode()} p3={person3.GetHashCode()}");
+
+            User user = new User { Name = "Tom" };
+            User user2 = new User { Name = "Tom" };
+
+            Console.WriteLine($"Hash u1={user.GetHashCode()} u2={user2.GetHashCode()}");
+
+            User user3 = user;
+
+            Console.WriteLine($"Hash u1={user.GetHashCode()} u3={user3.GetHashCode()}");
+        }
+
+        static void getType()
+        {
+            Person person = new Person { Name = "Tom" };
+            Console.WriteLine(person.GetType());    // Person
+
+            object person2 = new Person { Name = "Tom" };
+            if (person2.GetType() == typeof(Person))
+                Console.WriteLine("Это реально класс Person");
+        }
+
+        static void equals()
+        {
+            Person person1 = new Person { Name = "Tom" };
+            Person person2 = new Person { Name = "Bob" };
+            Person person3 = new Person { Name = "Tom" };
+            bool p1Ep2 = person1.Equals(person2);   // false
+            bool p1Ep3 = person1.Equals(person3);   // true
+            Console.WriteLine($"p1 equals p2 {p1Ep2}");
+            Console.WriteLine($"p1 equals p3 {p1Ep3}");
+        }
+
+        class Clock
+        {
+            public int Hours { get; set; }
+            public int Minutes { get; set; }
+            public int Seconds { get; set; }
+            public override string ToString()
+            {
+                return $"{Hours}:{Minutes}:{Seconds}";
+            }
+        }
+        class Person
+        {
+            public string Name { get; set; }
+
+            public override int GetHashCode()
+            {
+                return Name.GetHashCode();
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (obj.GetType() != this.GetType()) return false;
+
+                Person person = (Person)obj;
+                return (this.Name == person.Name);
+            }
+        }
+        class User
+        {
+            public string Name { get; set; }
+        }
+    }
 }
