@@ -61,6 +61,9 @@ namespace MetanitSharp
                     case 'j':
                         usingObject();
                         break;
+                    case 'g':
+                        usingGenerics();
+                        break;
                     case 'x': return;
                 }
                 Console.ReadKey();
@@ -84,6 +87,7 @@ namespace MetanitSharp
             Console.WriteLine("H - наследование классов и преобразование типов");
             Console.WriteLine("V - использование виртуальных методов");
             Console.WriteLine("J - методы System.Object");
+            Console.WriteLine("G - использование обобщений");
             Console.WriteLine("X - выход из раздела");
         }
 
@@ -786,6 +790,16 @@ namespace MetanitSharp
         static void usingObject()
         {
             ObjectDemo.Display();
+        }
+
+        static void usingGenerics()
+        {
+            GenericDemo.Display();
+            GenericRestriction.Display();
+            GenericGenericRestriction.Display();
+            GenericStandardRestrictions.Display();
+            GenericMultipleParams.Display();
+            GenericInheritance.Display();
         }
     }
 }

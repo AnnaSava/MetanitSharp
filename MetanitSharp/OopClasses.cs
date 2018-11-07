@@ -957,4 +957,395 @@ namespace MetanitSharp
             public string Name { get; set; }
         }
     }
+
+    class GenericDemo
+    {
+        public static void Display()
+        {
+            objectId();
+            genericId();
+            defaultId();
+            staticField();
+            multipleParams();
+            genericMethod();
+        }
+
+        static void objectId()
+        {
+            Account account1 = new Account { Sum = 5000 };
+            Account account2 = new Account { Sum = 4000 };
+            account1.Id = 2;
+            account2.Id = "4356";
+            int id1 = (int)account1.Id;         // упаковка в значения int в тип Object
+            string id2 = (string)account2.Id;   // Распаковка в тип int
+            Console.WriteLine(id1);
+            Console.WriteLine(id2);
+        }
+
+        static void genericId()
+        {
+            AccountGeneric<int> account1 = new AccountGeneric<int> { Sum = 5000 };
+            AccountGeneric<string> account2 = new AccountGeneric<string> { Sum = 4000 };
+            account1.Id = 2;        // упаковка не нужна
+            account2.Id = "4356";
+            int id1 = account1.Id;  // распаковка не нужна
+            string id2 = account2.Id;
+            Console.WriteLine(id1);
+            Console.WriteLine(id2);
+        }
+
+        static void defaultId()
+        {
+            AccountDefault<int> acc1 = new AccountDefault<int>();
+            AccountDefault<string> acc2 = new AccountDefault<string>();
+            Console.WriteLine(acc1.id);
+            Console.WriteLine(acc2.id);
+        }
+
+        static void staticField()
+        {
+            AccountGeneric<int> account1 = new AccountGeneric<int> { Sum = 5000 };
+            AccountGeneric<int>.session = 5436;
+
+            AccountGeneric<string> account2 = new AccountGeneric<string> { Sum = 4000 };
+            AccountGeneric<string>.session = "45245";
+
+            Console.WriteLine(AccountGeneric<int>.session);      // 5436
+            Console.WriteLine(AccountGeneric<string>.session);   // 45245
+        }
+
+        static void multipleParams()
+        {
+            AccountGeneric<int> acc1 = new AccountGeneric<int> { Id = 1857, Sum = 4500 };
+            AccountGeneric<int> acc2 = new AccountGeneric<int> { Id = 3453, Sum = 5000 };
+
+            Transaction<AccountGeneric<int>, string> transaction1 = new Transaction<AccountGeneric<int>, string>
+            {
+                FromAccount = acc1,
+                ToAccount = acc2,
+                Code = "45478758",
+                Sum = 900
+            };
+
+            Console.WriteLine($"Транзакция {transaction1.Code} от {transaction1.FromAccount.Id} к {transaction1.ToAccount.Id} на сумму {transaction1.Sum}");
+        }
+
+        static void genericMethod()
+        {
+            int x = 7;
+            int y = 25;
+            Swap<int>(ref x, ref y);
+            Console.WriteLine($"x={x}    y={y}");   // x=25   y=7
+
+            string s1 = "hello";
+            string s2 = "bye";
+            Swap<string>(ref s1, ref s2);
+            Console.WriteLine($"s1={s1}    s2={s2}"); // s1=bye   s2=hello
+        }
+
+        class Account
+        {
+            public object Id { get; set; }
+            public int Sum { get; set; }
+        }
+
+        class AccountGeneric<T>
+        {
+            public static T session;
+
+            public T Id { get; set; }
+            public int Sum { get; set; }
+        }
+
+        class AccountDefault<T>
+        {
+            // default присваивает ссылочным типам в качестве значения null, а типам значений - значение 0
+            public T id = default(T); 
+        }
+
+        class Transaction<U, V>
+        {
+            public U FromAccount { get; set; }  // с какого счета перевод
+            public U ToAccount { get; set; }    // на какой счет перевод
+            public V Code { get; set; }         // код операции
+            public int Sum { get; set; }        // сумма перевода
+        }
+
+        static void Swap<T>(ref T x, ref T y)
+        {
+            T temp = x;
+            x = y;
+            y = temp;
+        }
+    }
+
+    class GenericRestriction
+    {
+        public static void Display()
+        {
+            Account acc1 = new Account(1857) { Sum = 4500 };
+            Account acc2 = new Account(3453) { Sum = 5000 };
+            Transaction<Account> transaction1 = new Transaction<Account>
+            {
+                FromAccount = acc1,
+                ToAccount = acc2,
+                Sum = 6900
+            };
+            transaction1.Execute();
+        }
+
+        class Account
+        {
+            public int Id { get; private set; } // номер счета
+            public int Sum { get; set; }
+            public Account(int _id)
+            {
+                Id = _id;
+            }
+        }
+
+        class Transaction<T> where T : Account
+        {
+            public T FromAccount { get; set; }  // с какого счета перевод
+            public T ToAccount { get; set; }    // на какой счет перевод
+            public int Sum { get; set; }        // сумма перевода
+
+            public void Execute()
+            {
+                if (FromAccount.Sum > Sum)
+                {
+                    FromAccount.Sum -= Sum;
+                    ToAccount.Sum += Sum;
+                    Console.WriteLine($"Счет {FromAccount.Id}: {FromAccount.Sum}$ \nСчет {ToAccount.Id}: {ToAccount.Sum}$");
+                }
+                else
+                {
+                    Console.WriteLine($"Недостаточно денег на счете {FromAccount.Id}");
+                }
+            }
+        }
+    }
+
+    class GenericGenericRestriction
+    {
+        public static void Display()
+        {
+            Account<int> acc1 = new Account<int>(1857) { Sum = 10500 };
+            Account<int> acc2 = new Account<int>(3453) { Sum = 5000 };
+
+            Transaction<Account<int>> transaction1 = new Transaction<Account<int>>
+            {
+                FromAccount = acc1,
+                ToAccount = acc2,
+                Sum = 6900
+            };
+            transaction1.Execute();
+
+            Transact<Account<int>>(acc1, acc2, 900);
+        }
+
+        class Account<T>
+        {
+            public T Id { get; private set; } // номер счета
+            public int Sum { get; set; }
+            public Account(T _id)
+            {
+                Id = _id;
+            }
+        }
+        class Transaction<T> where T : Account<int>
+        {
+            public T FromAccount { get; set; }  // с какого счета перевод
+            public T ToAccount { get; set; }    // на какой счет перевод
+            public int Sum { get; set; }        // сумма перевода
+
+            public void Execute()
+            {
+                if (FromAccount.Sum > Sum)
+                {
+                    FromAccount.Sum -= Sum;
+                    ToAccount.Sum += Sum;
+                    Console.WriteLine($"Счет {FromAccount.Id}: {FromAccount.Sum}$ \nСчет {ToAccount.Id}: {ToAccount.Sum}$");
+                }
+                else
+                {
+                    Console.WriteLine($"Недостаточно денег на счете {FromAccount.Id}");
+                }
+            }
+        }
+
+        static void Transact<T>(T acc1, T acc2, int sum) where T : Account<int>
+        {
+            if (acc1.Sum > sum)
+            {
+                acc1.Sum -= sum;
+                acc2.Sum += sum;
+            }
+            Console.WriteLine($"acc1: {acc1.Sum}   acc2: {acc2.Sum}");
+        }
+    }
+
+    class GenericStandardRestrictions
+    {
+        public static void Display()
+        {
+            WithStruct<int> gen1 = new WithStruct<int>();
+            WithClass<Person> gen2 = new WithClass<Person>();
+            WithPublicConstructor<Person> gen3 = new WithPublicConstructor<Person>();
+
+            Console.WriteLine(gen1.GetType());
+            Console.WriteLine(gen2.GetType());
+            Console.WriteLine(gen3.GetType());            
+
+            Transaction<Account> transaction = new Transaction<Account>();
+
+            Console.WriteLine(transaction.GetType());
+        }
+
+        class WithStruct<T> where T : struct
+        { }
+
+        class WithClass<T> where T : class
+        { }
+
+        class WithPublicConstructor<T> where T : new()
+        { }
+
+        interface IAccount
+        {
+            int CurrentSum { get; set; }
+        }
+        class Person
+        {
+            public string Name { get; set; }
+        }
+
+        class Account : Person, IAccount
+        {
+            public int CurrentSum { get; set; }
+        }
+
+        class Transaction<T> where T : Person, IAccount, new()
+        {
+
+        }
+    }
+
+    class GenericMultipleParams
+    {
+        public static void Display()
+        {
+            Transaction<Account<int>, int> transaction = new Transaction<Account<int>, int>();
+            Console.WriteLine(transaction.GetType());
+        }
+
+        class Account<T>
+        {
+            public T Id { get; private set; } // номер счета
+            public int Sum { get; set; }
+            public Account(T _id)
+            {
+                Id = _id;
+            }
+        }
+
+        class Transaction<U, V>
+        where U : Account<int>
+        where V : struct
+        {
+
+        }
+    }
+
+    class GenericInheritance
+    {
+        public static void Display()
+        {
+            Account<string> acc1 = new Account<string>("34");
+            Account<int> acc2 = new UniversalAccount<int>(45);
+            UniversalAccount<int> acc3 = new UniversalAccount<int>(33);
+            Console.WriteLine(acc1.Id);
+            Console.WriteLine(acc2.Id);
+            Console.WriteLine(acc3.Id);
+
+            StringAccount acc4 = new StringAccount("438767");
+            Account<string> acc5 = new StringAccount("43875");
+            Console.WriteLine(acc4.Id);
+            Console.WriteLine(acc5.Id);
+
+            IntAccount<string> acc7 = new IntAccount<string>(5) { Code = "r4556" };
+            Account<int> acc8 = new IntAccount<long>(7) { Code = 4587 };
+            Console.WriteLine(acc7.Id);
+            Console.WriteLine(acc8.Id);
+
+            MixedAccount<string, int> acc9 = new MixedAccount<string, int>("456") { Code = 356 };
+            Account<string> acc10 = new MixedAccount<string, int>("9867") { Code = 35678 };
+            Console.WriteLine(acc9.Id);
+            Console.WriteLine(acc10.Id);
+
+            AccountWithClass<string> acc11 = new AccountWithClass<string>("34");
+            AccountWithClass<string> acc12 = new UniversalAccountWithClass<string>("45");
+            Console.WriteLine(acc11.Id);
+            Console.WriteLine(acc12.Id);
+        }
+
+        class Account<T>
+        {
+            public T Id { get; private set; }
+            public Account(T _id)
+            {
+                Id = _id;
+            }
+        }
+
+        class UniversalAccount<T> : Account<T>
+        {
+            public UniversalAccount(T id) : base(id)
+            {
+
+            }
+        }
+
+        class StringAccount : Account<string>
+        {
+            public StringAccount(string id) : base(id)
+            {
+            }
+        }
+
+        class IntAccount<T> : Account<int>
+        {
+            public T Code { get; set; }
+            public IntAccount(int id) : base(id)
+            {
+            }
+        }
+
+        class MixedAccount<T, K> : Account<T>
+            where K : struct
+        {
+            public K Code { get; set; }
+            public MixedAccount(T id) : base(id)
+            {
+
+            }
+        }
+
+        class AccountWithClass<T> where T : class
+        {
+            public T Id { get; private set; }
+            public AccountWithClass(T _id)
+            {
+                Id = _id;
+            }
+        }
+        class UniversalAccountWithClass<T> : AccountWithClass<T>
+            where T : class
+        {
+            public UniversalAccountWithClass(T id) : base(id)
+            {
+
+            }
+        }
+    }
 }
