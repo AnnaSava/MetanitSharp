@@ -27,6 +27,9 @@ namespace MetanitSharp
                     case 'o':
                         OopConcepts.Run();
                         break;
+                    case 'e':
+                        ExceptionsHandling.Run();
+                        break;
                 }
             }
         }
@@ -36,6 +39,7 @@ namespace MetanitSharp
             Console.WriteLine("Нажмите клавишу для выбора раздела");
             Console.WriteLine("B - основы программирования");
             Console.WriteLine("O - объектно-ориентированное программирование");
+            Console.WriteLine("E - обработка исключений");
         }
     }
 }
