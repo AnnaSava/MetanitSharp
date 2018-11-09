@@ -45,6 +45,8 @@
     <Compile Include="BasicConcepts.cs" />
     <Compile Include="ExceptionsClasses.cs" />
     <Compile Include="ExceptionsHandling.cs" />
+    <Compile Include="Interfaces.cs" />
+    <Compile Include="InterfacesClasses.cs" />
     <Compile Include="OopClasses.cs" />
     <Compile Include="OopConcepts.cs" />
     <Compile Include="Program.cs" />
