@@ -33,6 +33,9 @@ namespace MetanitSharp
                     case 'i':
                         Interfaces.Run();
                         break;
+                    case 'd':
+                        DelegatesAndEvents.Run();
+                        break;
                 }
             }
         }
@@ -43,6 +46,7 @@ namespace MetanitSharp
             Console.WriteLine("B - основы программирования");
             Console.WriteLine("O - объектно-ориентированное программирование");
             Console.WriteLine("E - обработка исключений");
+            Console.WriteLine("D - делегаты, события и лямбды");
             Console.WriteLine("I - интерфейсы");
         }
     }
