@@ -247,4 +247,112 @@ namespace MetanitSharp
             return ch.ToString() + ch.ToString();
         }
     }
+
+    class DelegateAccountExample
+    {
+
+        public static void Display()
+        {
+            exampleSimple();
+            exampleColor();
+        }
+
+        static void exampleSimple()
+        {
+            // создаем банковский счет
+            Account account = new Account(200);
+            // Добавляем в делегат ссылку на метод Show_Message
+            // а сам делегат передается в качестве параметра метода RegisterHandler
+            account.RegisterHandler(new Account.AccountStateHandler(Show_Message));
+            // Два раза подряд пытаемся снять деньги
+            account.Withdraw(100);
+            account.Withdraw(150);
+        }
+
+        static void exampleColor()
+        {
+            Console.WriteLine("\nПример с цветом");
+
+            Account account = new Account(200);
+            Account.AccountStateHandler colorDelegate = new Account.AccountStateHandler(Color_Message);
+
+            // Добавляем в делегат ссылку на методы
+            account.RegisterHandler(new Account.AccountStateHandler(Show_Message));
+            account.RegisterHandler(colorDelegate);
+            // Два раза подряд пытаемся снять деньги
+            account.Withdraw(100);
+            account.Withdraw(150);
+
+            // Удаляем делегат
+            account.UnregisterHandler(colorDelegate);
+            account.Withdraw(50);
+        }
+
+        private static void Show_Message(String message)
+        {
+            Console.WriteLine(message);
+        }
+
+        private static void Color_Message(string message)
+        {
+            // Устанавливаем красный цвет символов
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(message);
+            // Сбрасываем настройки цвета
+            Console.ResetColor();
+        }
+
+        class Account
+        {
+            // Объявляем делегат
+            public delegate void AccountStateHandler(string message);
+            // Создаем переменную делегата
+            AccountStateHandler _del;
+
+            // Регистрируем делегат
+            public void RegisterHandler(AccountStateHandler del)
+            {
+                _del += del; // добавляем делегат
+            }
+
+            // Отмена регистрации делегата
+            public void UnregisterHandler(AccountStateHandler del)
+            {
+                _del -= del; // удаляем делегат
+            }
+
+            int _sum; // Переменная для хранения суммы
+
+            public Account(int sum)
+            {
+                _sum = sum;
+            }
+
+            public int CurrentSum
+            {
+                get { return _sum; }
+            }
+
+            public void Put(int sum)
+            {
+                _sum += sum;
+            }
+
+            public void Withdraw(int sum)
+            {
+                if (sum <= _sum)
+                {
+                    _sum -= sum;
+
+                    if (_del != null)
+                        _del($"Сумма {sum} снята со счета");
+                }
+                else
+                {
+                    if (_del != null)
+                        _del("Недостаточно денег на счете");
+                }
+            }
+        }
+    }
 }
