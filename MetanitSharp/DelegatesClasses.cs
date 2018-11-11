@@ -355,4 +355,156 @@ namespace MetanitSharp
             }
         }
     }
+
+    class EventAccountExample
+    {
+        public static void Display()
+        {
+            Account account = new Account(200);
+            // Добавляем обработчики события
+            account.Added += Show_Message;
+            account.Withdrawn += Show_Message;
+
+            account.Withdraw(100);
+            // Удаляем обработчик события
+            account.Withdrawn -= Show_Message;
+
+            account.Withdraw(50);
+            account.Put(150);
+
+            account.Added += new Account.AccountStateHandler(Show_Message);
+
+            account.Put(300);
+            account.Added -= Show_Message;
+        }
+
+        private static void Show_Message(string message)
+        {
+            Console.WriteLine(message);
+        }
+
+        class Account
+        {
+            // Объявляем делегат
+            public delegate void AccountStateHandler(string message);
+            // Событие, возникающее при выводе денег
+            public event AccountStateHandler Withdrawn;
+            // Событие, возникающее при добавление на счет
+            public event AccountStateHandler Added;
+
+            int _sum; // Переменная для хранения суммы
+
+            public Account(int sum)
+            {
+                _sum = sum;
+            }
+
+            public int CurrentSum
+            {
+                get { return _sum; }
+            }
+
+            public void Put(int sum)
+            {
+                _sum += sum;
+                if (Added != null)
+                    Added($"На счет поступило {sum}");
+            }
+            public void Withdraw(int sum)
+            {
+                if (sum <= _sum)
+                {
+                    _sum -= sum;
+                    if (Withdrawn != null)
+                        Withdrawn($"Сумма {sum} снята со счета");
+                }
+                else
+                {
+                    if (Withdrawn != null)
+                        Withdrawn("Недостаточно денег на счете");
+                }
+            }
+        }
+    }
+
+    class EventAccountArgsExample
+    {
+        public static void Display()
+        {
+            Account account = new Account(200);
+            // Добавляем обработчики события
+            account.Added += Show_Message;
+            account.Withdrawn += Show_Message;
+
+            account.Withdraw(100);
+            // Удаляем обработчик события
+            account.Withdrawn -= Show_Message;
+
+            account.Withdraw(50);
+            account.Put(150);
+        }
+
+        private static void Show_Message(object sender, AccountEventArgs e)
+        {
+            Console.WriteLine($"Сумма транзакции: {e.Sum}");
+            Console.WriteLine(e.Message);            
+        }
+
+        class AccountEventArgs
+        {
+            // Сообщение
+            public string Message { get; }
+            // Сумма, на которую изменился счет
+            public int Sum { get; }
+
+            public AccountEventArgs(string mes, int sum)
+            {
+                Message = mes;
+                Sum = sum;
+            }
+        }
+
+        class Account
+        {
+            // Объявляем делегат
+            public delegate void AccountStateHandler(object sender, AccountEventArgs e);
+            // Событие, возникающее при выводе денег
+            public event AccountStateHandler Withdrawn;
+            // Событие, возникающее при добавлении на счет
+            public event AccountStateHandler Added;
+
+            int _sum; // Переменная для хранения суммы
+
+            public Account(int sum)
+            {
+                _sum = sum;
+            }
+
+            public int CurrentSum
+            {
+                get { return _sum; }
+            }
+
+            public void Put(int sum)
+            {
+                _sum += sum;
+                if (Added != null)
+                    Added(this, new AccountEventArgs($"На счет поступило {sum}", sum));
+            }
+            public void Withdraw(int sum)
+            {
+                if (_sum >= sum)
+                {
+                    _sum -= sum;
+                    if (Withdrawn != null)
+                        Withdrawn(this, new AccountEventArgs($"Сумма {sum} снята со счета", sum));
+                }
+                else
+                {
+                    if (Withdrawn != null)
+                        Withdrawn(this, new AccountEventArgs("Недостаточно денег на счете", sum));
+                }
+            }
+        }
+    }
 }

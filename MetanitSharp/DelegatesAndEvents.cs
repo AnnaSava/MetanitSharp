@@ -32,6 +32,10 @@ namespace MetanitSharp
                     case 'a':
                         DelegateAccountExample.Display();
                         break;
+                    case 'e':
+                        EventAccountExample.Display();
+                        EventAccountArgsExample.Display();
+                        break;
                     case 'x': return;
                 }
                 Console.ReadKey();
@@ -43,6 +47,7 @@ namespace MetanitSharp
             Console.WriteLine("Нажмите клавишу для вывода информации");
             Console.WriteLine("D - использование делегатов");
             Console.WriteLine("A - пример с делегатами и списанием средств со счета");
+            Console.WriteLine("E - пример с событиями");
             Console.WriteLine("X - выход из раздела");
         }
     }    
