@@ -29,12 +29,16 @@ namespace MetanitSharp
                         DelegateAsParam.Display();
                         GenericDelegates.Display();
                         break;
-                    case 'a':
+                    case 'h':
                         DelegateAccountExample.Display();
                         break;
                     case 'e':
                         EventAccountExample.Display();
                         EventAccountArgsExample.Display();
+                        break;
+                    case 'a':
+                        AnonymousMethodsDemo.Display();
+                        AnonymousMethodsHandler.Display();
                         break;
                     case 'x': return;
                 }
@@ -46,8 +50,9 @@ namespace MetanitSharp
         {
             Console.WriteLine("Нажмите клавишу для вывода информации");
             Console.WriteLine("D - использование делегатов");
-            Console.WriteLine("A - пример с делегатами и списанием средств со счета");
+            Console.WriteLine("H - пример с делегатами и списанием средств со счета");
             Console.WriteLine("E - пример с событиями");
+            Console.WriteLine("A - анонимные методы");
             Console.WriteLine("X - выход из раздела");
         }
     }    

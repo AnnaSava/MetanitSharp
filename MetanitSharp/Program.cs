@@ -45,9 +45,9 @@ namespace MetanitSharp
             Console.WriteLine("Нажмите клавишу для выбора раздела");
             Console.WriteLine("B - основы программирования");
             Console.WriteLine("O - объектно-ориентированное программирование");
-            Console.WriteLine("E - обработка исключений");
-            Console.WriteLine("D - делегаты, события и лямбды");
+            Console.WriteLine("E - обработка исключений");            
             Console.WriteLine("I - интерфейсы");
+            Console.WriteLine("D - делегаты, события и лямбды");
         }
     }
 }

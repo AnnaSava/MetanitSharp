@@ -507,4 +507,107 @@ namespace MetanitSharp
             }
         }
     }
+
+    class AnonymousMethodsDemo
+    {
+        delegate int Operation(int x, int y);
+
+        delegate void MessageHandler(string message);
+
+        public static void Display()
+        {
+            MessageHandler handler = delegate (string msg)
+            {
+                Console.WriteLine(msg);
+            };
+            handler("hello world!");
+
+            ShowMessage("hello!", delegate (string msg)
+            {
+                Console.WriteLine(msg);
+            });
+
+            MessageHandler handler2 = delegate
+            {
+                Console.WriteLine("анонимный метод");
+            };
+            handler2("hello world!");    // анонимный метод
+
+            Operation operation = delegate (int x, int y)
+            {
+                return x + y;
+            };
+            int d = operation(4, 5);
+            Console.WriteLine(d);       // 9
+
+            int z = 8;
+            Operation operation2 = delegate (int x, int y)
+            {
+                return x + y + z;
+            };
+            int f = operation2(4, 5);
+            Console.WriteLine(f);       // 17
+        }
+
+        static void ShowMessage(string message, MessageHandler handler)
+        {
+            handler(message);
+        }
+    }
+
+    class AnonymousMethodsHandler
+    {
+        public static void Display()
+        {
+            Account account = new Account(200);
+            // Добавляем обработчики события
+            account.Added += delegate (object sender, AccountEventArgs e)
+            {
+                Console.WriteLine($"Сумма транзакции: {e.Sum}");
+                Console.WriteLine(e.Message);
+            };
+            account.Put(230);
+        }
+
+        delegate void AccountStateHandler(object sender, AccountEventArgs e);
+        class AccountEventArgs
+        {
+            public string Message { get; }
+            public int Sum { get; }
+            public AccountEventArgs(string message, int sum)
+            {
+                Message = message; Sum = sum;
+            }
+        }
+        class Account
+        {
+            int _sum;
+            public event AccountStateHandler Added;
+            public event AccountStateHandler Withdrawn;
+            public Account(int sum)
+            {
+                _sum = sum;
+            }
+            public void Put(int sum)
+            {
+                _sum += sum;
+                if (Added != null) Added(this,
+                    new AccountEventArgs($"На счет пришло {sum}", sum));
+            }
+            public void Withdraw(int sum)
+            {
+                if (_sum >= sum)
+                {
+                    _sum -= sum;
+                    if (Withdrawn != null)
+                        Withdrawn(this, new AccountEventArgs($"Со счета снято {sum}", sum));
+                }
+                else
+                {
+                    if (Withdrawn != null)
+                        Withdrawn(this, new AccountEventArgs("На счете недостаточно средств", 0));
+                }
+            }
+        }
+    }
 }
