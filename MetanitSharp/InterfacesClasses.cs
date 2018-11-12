@@ -621,7 +621,7 @@ namespace MetanitSharp
         }
     }
 
-    class CovarianceContravariance
+    class InterfaceCoContraVariance
     {
         public static void Display()
         {

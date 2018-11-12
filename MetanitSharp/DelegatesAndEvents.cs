@@ -40,6 +40,18 @@ namespace MetanitSharp
                         AnonymousMethodsDemo.Display();
                         AnonymousMethodsHandler.Display();
                         break;
+                    case 'l':
+                        LambdaDemo.Display();
+                        LambdaHandler.Display();
+                        LambdaAsArgument.Display();
+                        break;
+                    case 'c':
+                        DelegateCoContraVariance.Display();
+                        DelegateCoContraVarianceGeneric.Display();
+                        break;
+                    case 'f':
+                        DonNetDelegates.Display();
+                        break;
                     case 'x': return;
                 }
                 Console.ReadKey();
@@ -53,6 +65,9 @@ namespace MetanitSharp
             Console.WriteLine("H - пример с делегатами и списанием средств со счета");
             Console.WriteLine("E - пример с событиями");
             Console.WriteLine("A - анонимные методы");
+            Console.WriteLine("L - лямбды");
+            Console.WriteLine("C - ковариантность и контрвариантность");
+            Console.WriteLine("F - делегаты Action, Predicate и Func");
             Console.WriteLine("X - выход из раздела");
         }
     }    

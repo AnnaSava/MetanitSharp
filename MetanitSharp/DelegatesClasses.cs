@@ -447,7 +447,7 @@ namespace MetanitSharp
         private static void Show_Message(object sender, AccountEventArgs e)
         {
             Console.WriteLine($"Сумма транзакции: {e.Sum}");
-            Console.WriteLine(e.Message);            
+            Console.WriteLine(e.Message);
         }
 
         class AccountEventArgs
@@ -608,6 +608,320 @@ namespace MetanitSharp
                         Withdrawn(this, new AccountEventArgs("На счете недостаточно средств", 0));
                 }
             }
+        }
+    }
+
+    class LambdaDemo
+    {
+        delegate int Operation(int x, int y);
+
+        delegate int Square(int x); // объявляем делегат, принимающий int и возвращающий int
+
+        delegate void Hello(); // делегат без параметров
+
+        delegate void ChangeHandler(ref int x);
+        public static void Display()
+        {
+            Operation operation = (x, y) => x + y;
+            Console.WriteLine(operation(10, 20));       // 30
+            Console.WriteLine(operation(40, 20));       // 60
+
+            Square square = i => i * i; // объекту делегата присваивается лямбда-выражение
+
+            int z = square(6); // используем делегат
+            Console.WriteLine(z); // выводит число 36
+
+            Hello hello1 = () => Console.WriteLine("Hello");
+            Hello hello2 = () => Console.WriteLine("Welcome");
+            hello1();       // Hello
+            hello2();       // Welcome
+
+
+            int t = 9;
+            ChangeHandler ch = (ref int n) => n = n * 2;
+            ch(ref t);
+            Console.WriteLine(t);   // 18
+
+            Hello message = () => Show_Message();
+            message();
+        }
+
+        private static void Show_Message()
+        {
+            Console.WriteLine("Привет мир!");
+        }
+    }
+
+    class LambdaHandler
+    {
+        delegate void AccountStateHandler(object sender, AccountEventArgs e);
+        public static void Display()
+        {
+            Account account = new Account(100);
+            account.Added += (sender, e) =>
+            {
+                Console.WriteLine($"Сумма транзакции: {e.Sum}");
+                Console.WriteLine(e.Message);
+            };
+            account.Put(200);
+            account.Put(109);
+        }
+
+        class AccountEventArgs
+        {
+            public string Message { get; }
+            public int Sum { get; }
+            public AccountEventArgs(string message, int sum)
+            {
+                Message = message; Sum = sum;
+            }
+        }
+        class Account
+        {
+            int _sum;
+            public event AccountStateHandler Added;
+            public event AccountStateHandler Withdrawn;
+            public Account(int sum)
+            {
+                _sum = sum;
+            }
+            public void Put(int sum)
+            {
+                _sum += sum;
+                if (Added != null) Added(this,
+                    new AccountEventArgs($"На счет пришло {sum}", sum));
+            }
+            public void Withdraw(int sum)
+            {
+                if (_sum >= sum)
+                {
+                    _sum -= sum;
+                    if (Withdrawn != null)
+                        Withdrawn(this, new AccountEventArgs($"Со счета снято {sum}", sum));
+                }
+                else
+                {
+                    if (Withdrawn != null)
+                        Withdrawn(this,
+                            new AccountEventArgs("На счете недостаточно средств", 0));
+                }
+            }
+        }
+    }
+
+    class LambdaAsArgument
+    {
+        delegate bool IsEqual(int x);
+
+        public static void Display()
+        {
+            int[] integers = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+            // найдем сумму чисел больше 5
+            int result1 = Sum(integers, x => x > 5);
+            Console.WriteLine(result1); // 30
+
+            // найдем сумму четных чисел
+            int result2 = Sum(integers, x => x % 2 == 0);
+            Console.WriteLine(result2);  //20
+
+            // сумма чисел, чьи квадраты больше 20
+            int result3 = Sum(integers, x => (x * x) > 20);
+            Console.WriteLine(result3); //35
+        }
+
+        private static int Sum(int[] numbers, IsEqual func)
+        {
+            int result = 0;
+            foreach (int i in numbers)
+            {
+                if (func(i))
+                    result += i;
+            }
+            return result;
+        }
+    }
+
+    class DelegateCoContraVariance
+    {
+        delegate Person PersonFactory(string name);
+        delegate void ClientInfo(Client client);
+
+        public static void Display()
+        {
+            PersonFactory personDel;
+            personDel = BuildClient; // ковариантность
+            Person p = personDel("Tom");
+            Console.WriteLine(p.Name);
+
+            ClientInfo clientInfo = GetPersonInfo; // контравариантность
+            Client client = new Client("Alice");
+            clientInfo(client);
+
+            clientInfo((Client)p);
+
+            Client client2 = (Client)personDel("Ann");
+            clientInfo(client2);
+        }
+
+        private static Client BuildClient(string name)
+        {
+            return new Client(name);
+        }
+
+        private static void GetPersonInfo(Person p)
+        {
+            Console.WriteLine(p.Name);
+        }
+
+        class Person
+        {
+            public string Name { get; set; }
+
+            public Person(String name)
+            {
+                Name = name;
+            }
+        }
+        class Client : Person
+        {
+            public Client(String name) : base(name) { }
+        }
+    }
+
+    class DelegateCoContraVarianceGeneric
+    {
+        delegate T Builder<out T>(string name);
+
+        delegate void GetInfo<in T>(T item);
+
+        public static void Display()
+        {
+            Builder<Client> clientBuilder = GetClient;
+            Builder<Person> personBuilder1 = clientBuilder;     // ковариантность
+            Builder<Person> personBuilder2 = GetClient;         // ковариантность
+
+            Person p = personBuilder1("Tom"); // вызов делегата
+            p.Display(); // Client: Tom
+
+            GetInfo<Person> personInfo = PersonInfo;
+            GetInfo<Client> clientInfo = personInfo;      // контравариантность
+
+            Client client = new Client { Name = "Tom" };
+            clientInfo(client); // Client: Tom
+        }
+
+        private static Person GetPerson(string name)
+        {
+            return new Person(name);
+        }
+        private static Client GetClient(string name)
+        {
+            return new Client(name);
+        }
+
+        private static void PersonInfo(Person p) => p.Display();
+        private static void ClientInfo(Client cl) => cl.Display();
+
+        class Person
+        {
+            public string Name { get; set; }
+            public virtual void Display() => Console.WriteLine($"Person {Name}");
+
+            public Person() { }
+
+            public Person(String name)
+            {
+                Name = name;
+            }
+        }
+        class Client : Person
+        {
+            public override void Display() => Console.WriteLine($"Client {Name}");
+
+            public Client() { }
+
+            public Client(String name) : base(name) { }
+        }
+    }
+
+    class DonNetDelegates
+    {
+        public static void Display()
+        {
+            action();
+            predicate();
+            func();
+        }        
+
+        static void action()
+        {
+            Action<int, int> op;
+            op = Add;
+            Operation(10, 6, op);
+
+            Operation(10, 6, Substract);
+
+            Operation(10, 6, (x, y) => Console.WriteLine($"Произведение чисел: {x * y}"));            
+        }
+
+        static void predicate()
+        {
+            Predicate<int> isPositive = delegate (int x) { return x > 0; };
+
+            Console.WriteLine(isPositive(20));
+            Console.WriteLine(isPositive(-20));
+
+            Predicate<int> isNegative = x => x < 0;
+
+            Console.WriteLine(isNegative(20));
+            Console.WriteLine(isPositive(-20));            
+        }
+
+        static void func()
+        {
+            Func<int, int> retFunc = Factorial;
+            int n1 = GetInt(6, retFunc);
+            Console.WriteLine(n1);  // 720
+
+            int n2 = GetInt(6, x => x * x);
+            Console.WriteLine(n2); // 36
+
+            int n3 = GetInt(6, x => x + x);
+            Console.WriteLine(n3);
+        }
+
+        static void Operation(int x1, int x2, Action<int, int> op)
+        {
+            if (x1 > x2)
+                op(x1, x2);
+        }
+
+        static void Add(int x1, int x2)
+        {
+            Console.WriteLine("Сумма чисел: " + (x1 + x2));
+        }
+
+        static void Substract(int x1, int x2)
+        {
+            Console.WriteLine("Разность чисел: " + (x1 - x2));
+        }
+
+        static int GetInt(int x1, Func<int, int> retF)
+        {
+            int result = 0;
+            if (x1 > 0)
+                result = retF(x1);
+            return result;
+        }
+        static int Factorial(int x)
+        {
+            int result = 1;
+            for (int i = 1; i <= x; i++)
+            {
+                result *= i;
+            }
+            return result;
         }
     }
 }

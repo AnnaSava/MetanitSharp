@@ -38,7 +38,7 @@ namespace MetanitSharp
                         Comparable.Display();
                         break;
                     case 'c':
-                        CovarianceContravariance.Display();
+                        InterfaceCoContraVariance.Display();
                         break;
                     case 'x': return;
                 }
