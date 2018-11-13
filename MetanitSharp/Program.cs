@@ -36,6 +36,9 @@ namespace MetanitSharp
                     case 'd':
                         DelegatesAndEvents.Run();
                         break;
+                    case 't':
+                        OopExtention.Run();
+                        break;
                 }
             }
         }
@@ -48,6 +51,7 @@ namespace MetanitSharp
             Console.WriteLine("E - обработка исключений");            
             Console.WriteLine("I - интерфейсы");
             Console.WriteLine("D - делегаты, события и лямбды");
+            Console.WriteLine("T - дополнительные возможности ООП");
         }
     }
 }

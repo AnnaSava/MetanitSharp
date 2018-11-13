@@ -51,6 +51,10 @@
     <Compile Include="InterfacesClasses.cs" />
     <Compile Include="OopClasses.cs" />
     <Compile Include="OopConcepts.cs" />
+    <Compile Include="OopExtClasses.cs" />
+    <Compile Include="OopExtention.cs" />
+    <Compile Include="PartialPerson.cs" />
+    <Compile Include="PartialPersonAddition.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
