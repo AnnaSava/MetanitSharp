@@ -36,6 +36,15 @@ namespace MetanitSharp
                     case 'p':
                         partialClass();
                         break;
+                    case 'a':
+                        AnonymousTypes.Display();
+                        break;
+                    case 'l':
+                        LocalFunction.Display();
+                        break;
+                    case 'm':
+                        PatternMatching.Display();
+                        break;
                     case 'x': return;
                 }
                 Console.ReadKey();
@@ -48,6 +57,9 @@ namespace MetanitSharp
             Console.WriteLine("N - пространства имен");
             Console.WriteLine("E - методы расширения");
             Console.WriteLine("P - частичные классы и методы");
+            Console.WriteLine("A - анонимные типы");
+            Console.WriteLine("L - локальные функции");
+            Console.WriteLine("M - pattern matching");
             Console.WriteLine("X - выход из раздела");
         }
 

@@ -889,6 +889,9 @@ namespace MetanitSharp
 
             int n3 = GetInt(6, x => x + x);
             Console.WriteLine(n3);
+
+            int n4 = FactorialFunc(10);
+            Console.WriteLine(n4);
         }
 
         static void Operation(int x1, int x2, Action<int, int> op)
@@ -922,6 +925,14 @@ namespace MetanitSharp
                 result *= i;
             }
             return result;
+        }
+
+        // Пример из комментов к статье про локальные функции
+        static int FactorialFunc(int number)
+        {
+            Func<int, int> fib = null;
+            fib = (x) => x > 1 ? fib(x - 1) + fib(x - 2) : x;
+            return fib(number);
         }
     }
 }
