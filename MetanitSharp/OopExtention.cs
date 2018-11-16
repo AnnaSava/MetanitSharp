@@ -45,6 +45,15 @@ namespace MetanitSharp
                     case 'm':
                         PatternMatching.Display();
                         break;
+                    case 'd':
+                        DeconstructorDemo.Display();
+                        break;
+                    case 'u':
+                        NullableTypes.Display();
+                        break;
+                    case 'r':
+                        ReferenceVars.Display();
+                        break;
                     case 'x': return;
                 }
                 Console.ReadKey();
@@ -60,6 +69,9 @@ namespace MetanitSharp
             Console.WriteLine("A - анонимные типы");
             Console.WriteLine("L - локальные функции");
             Console.WriteLine("M - pattern matching");
+            Console.WriteLine("D - деконструкторы");
+            Console.WriteLine("U - nullable-типы");
+            Console.WriteLine("R - переменные-ссылки");
             Console.WriteLine("X - выход из раздела");
         }
 
