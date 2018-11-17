@@ -43,6 +43,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BasicConcepts.cs" />
+    <Compile Include="Collections.cs" />
+    <Compile Include="CollectionsClasses.cs" />
     <Compile Include="DelegatesAndEvents.cs" />
     <Compile Include="DelegatesClasses.cs" />
     <Compile Include="ExceptionsClasses.cs" />

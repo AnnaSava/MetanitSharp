@@ -39,6 +39,9 @@ namespace MetanitSharp
                     case 't':
                         OopExtention.Run();
                         break;
+                    case 'c':
+                        Collections.Run();
+                        break;
                 }
             }
         }
@@ -52,6 +55,7 @@ namespace MetanitSharp
             Console.WriteLine("I - интерфейсы");
             Console.WriteLine("D - делегаты, события и лямбды");
             Console.WriteLine("T - дополнительные возможности ООП");
+            Console.WriteLine("C - коллекции");
         }
     }
 }
