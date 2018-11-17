@@ -44,6 +44,12 @@ namespace MetanitSharp
                     case 'o':
                         ObservableCollectionDemo.Display();
                         break;
+                    case 'e':
+                        EnumeratorDemo.Display();
+                        break;
+                    case 'y':
+                        YieldDemo.Display();
+                        break;
                     case 'x': return;
                 }
                 Console.ReadKey();
@@ -60,6 +66,8 @@ namespace MetanitSharp
             Console.WriteLine("S - стек Stack<T>");
             Console.WriteLine("D - словарь Dictionary<TKey, TValue>");
             Console.WriteLine("O - класс ObservableCollection");
+            Console.WriteLine("E - перечислители");
+            Console.WriteLine("Y - итераторы и yield");
             Console.WriteLine("X - выход из раздела");
         }
 
