@@ -42,6 +42,9 @@ namespace MetanitSharp
                     case 'c':
                         Collections.Run();
                         break;
+                    case 'f':
+                        FileAndStream.Run();
+                        break;
                 }
             }
         }
@@ -54,8 +57,9 @@ namespace MetanitSharp
             Console.WriteLine("E - обработка исключений");            
             Console.WriteLine("I - интерфейсы");
             Console.WriteLine("D - делегаты, события и лямбды");
-            Console.WriteLine("T - дополнительные возможности ООП");
+            Console.WriteLine("T - дополнительные возможности ООП");            
             Console.WriteLine("C - коллекции");
+            Console.WriteLine("F - работа с потоками и файловой системой");
         }
     }
 }

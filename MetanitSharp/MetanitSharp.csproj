@@ -49,6 +49,7 @@
     <Compile Include="DelegatesClasses.cs" />
     <Compile Include="ExceptionsClasses.cs" />
     <Compile Include="ExceptionsHandling.cs" />
+    <Compile Include="FileAndStream.cs" />
     <Compile Include="Interfaces.cs" />
     <Compile Include="InterfacesClasses.cs" />
     <Compile Include="OopClasses.cs" />
