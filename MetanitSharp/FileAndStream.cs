@@ -34,6 +34,18 @@ namespace MetanitSharp
                     case 'f':
                         usingFiles();
                         break;
+                    case 's':
+                        usingFileStream();
+                        usingSeek();
+                        closeFileStream();
+                        break;
+                    case 'm':
+                        usingStreamReader();
+                        usingStreamWriter();
+                        break;
+                    case 'b':
+                        usingBinaryReader();
+                        break;
                     case 'x': return;
                 }
                 Console.ReadKey();
@@ -46,6 +58,9 @@ namespace MetanitSharp
             Console.WriteLine("D - работа с дисками");
             Console.WriteLine("R - работа с каталогами");
             Console.WriteLine("F - работа с файлами");
+            Console.WriteLine("S - чтение и запись в файл через FileStream");
+            Console.WriteLine("M - StreamReader и StreamWriter");
+            Console.WriteLine("B - BinaryReader и BinaryWriter");
             Console.WriteLine("X - выход из раздела");
         }
 
@@ -204,7 +219,7 @@ namespace MetanitSharp
 
                 fileInf.CopyTo(path, true);
                 Console.WriteLine($"Файл скопирован в {path}");
-                Console.WriteLine($"Полное имя файла fileInf {fileInf.FullName}"); 
+                Console.WriteLine($"Полное имя файла fileInf {fileInf.FullName}");
                 Console.Write("Нажмите любую клавишу для продолжения");
                 Console.ReadLine();
 
@@ -219,7 +234,7 @@ namespace MetanitSharp
         {
             string path = @"C:\Metanit\file.txt";
             string newPath = @"C:\Metanit\Files\file.txt";
-            
+
             if (File.Exists(path))
             {
                 Console.WriteLine("Имя файла: {0}", path);
@@ -239,6 +254,247 @@ namespace MetanitSharp
                 Console.WriteLine($"Файл {newPath} удален");
                 Console.Write("Нажмите любую клавишу для продолжения");
                 Console.ReadLine();
+            }
+        }
+
+        static void usingFileStream()
+        {
+            string filePath = @"C:\Metanit\note.txt";
+
+            Console.WriteLine("Введите строку для записи в файл:");
+            string text = Console.ReadLine();
+
+            // запись в файл
+            using (FileStream fstream = new FileStream(filePath, FileMode.OpenOrCreate))
+            {
+                // преобразуем строку в байты
+                byte[] array = System.Text.Encoding.Default.GetBytes(text);
+                // запись массива байтов в файл
+                fstream.Write(array, 0, array.Length);
+                Console.WriteLine("Текст записан в файл");
+            }
+
+            // чтение из файла
+            using (FileStream fstream = File.OpenRead(filePath))
+            {
+                // преобразуем строку в байты
+                byte[] array = new byte[fstream.Length];
+                // считываем данные
+                fstream.Read(array, 0, array.Length);
+                // декодируем байты в строку
+                string textFromFile = System.Text.Encoding.Default.GetString(array);
+                Console.WriteLine("Текст из файла: {0}", textFromFile);
+            }
+        }
+
+        static void usingSeek()
+        {
+            string text = "hello world";
+            string filePath = @"C:\Metanit\note.dat";
+
+            // запись в файл
+            using (FileStream fstream = new FileStream(filePath, FileMode.OpenOrCreate))
+            {
+                // преобразуем строку в байты
+                byte[] input = Encoding.Default.GetBytes(text);
+                // запись массива байтов в файл
+                fstream.Write(input, 0, input.Length);
+                Console.WriteLine($"Текст записан в файл {filePath}");
+
+                // перемещаем указатель в конец файла, до конца файла- пять байт
+                fstream.Seek(-5, SeekOrigin.End); // минус 5 символов с конца потока
+
+                // считываем четыре символов с текущей позиции
+                byte[] output = new byte[4];
+                fstream.Read(output, 0, output.Length);
+                // декодируем байты в строку
+                string textFromFile = Encoding.Default.GetString(output);
+                Console.WriteLine("Текст из файла: {0}", textFromFile); // worl
+
+                // заменим в файле слово world на слово house
+                string replaceText = "house";
+                fstream.Seek(-5, SeekOrigin.End); // минус 5 символов с конца потока
+                input = Encoding.Default.GetBytes(replaceText);
+                fstream.Write(input, 0, input.Length);
+
+                // считываем весь файл
+                // возвращаем указатель в начало файла
+                fstream.Seek(0, SeekOrigin.Begin);
+                output = new byte[fstream.Length];
+                fstream.Read(output, 0, output.Length);
+                // декодируем байты в строку
+                textFromFile = Encoding.Default.GetString(output);
+                Console.WriteLine("Текст из файла: {0}", textFromFile); // hello house
+            }
+        }
+
+        static void closeFileStream()
+        {
+            string filePath = @"C:\Metanit\note.dat";
+            FileStream fstream = null;
+            try
+            {
+                fstream = new FileStream(filePath, FileMode.OpenOrCreate);
+
+                // преобразуем строку в байты
+                byte[] array = new byte[fstream.Length];
+                // считываем данные
+                fstream.Read(array, 0, array.Length);
+
+                array[fstream.Length + 1] = 2; // IndexOutOfRange
+
+                fstream.Write(array, 0, array.Length);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                if (fstream != null)
+                {
+                    fstream.Close();
+
+                    Console.WriteLine("Файл закрыт");
+                    try
+                    {
+                        Console.WriteLine(fstream.Length);
+                    }
+                    catch (Exception ex2)
+                    {
+                        Console.WriteLine(ex2.Message);
+                    }
+                }
+            }
+
+        }
+
+        static void usingStreamReader()
+        {
+            string path = @"C:\Metanit\cats.txt";
+
+            try
+            {
+                Console.WriteLine("******считываем весь файл********");
+                using (StreamReader sr = new StreamReader(path))
+                {
+                    Console.WriteLine(sr.ReadToEnd());
+                }
+
+                Console.WriteLine();
+                Console.WriteLine("******считываем построчно********");
+                using (StreamReader sr = new StreamReader(path, System.Text.Encoding.Default))
+                {
+                    string line;
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        Console.WriteLine(line);
+                    }
+                }
+
+                Console.WriteLine();
+                Console.WriteLine("******считываем блоками********");
+                using (StreamReader sr = new StreamReader(path, System.Text.Encoding.Default))
+                {
+                    char[] array = new char[4];
+                    // считываем 4 символа
+                    sr.Read(array, 0, 4);
+
+                    Console.WriteLine(array);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+
+        static void usingStreamWriter()
+        {
+            string readPath = @"C:\Metanit\cats.txt";
+            string writePath = @"C:\Metanit\ourcats.txt";
+
+            string text = "";
+            try
+            {
+                using (StreamReader sr = new StreamReader(readPath, System.Text.Encoding.Default))
+                {
+                    text = sr.ReadToEnd();
+                }
+                using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding.Default))
+                {
+                    sw.WriteLine(text);
+                }
+
+                using (StreamWriter sw = new StreamWriter(writePath, true, System.Text.Encoding.Default))
+                {
+                    sw.WriteLine("Дозапись");
+                    sw.Write(4.5);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+
+        static void usingBinaryReader()
+        {
+            State[] states = new State[2];
+            states[0] = new State("Германия", "Берлин", 357168, 80.8);
+            states[1] = new State("Франция", "Париж", 640679, 64.7);
+
+            string path = @"C:\Metanit\states.dat";
+
+            try
+            {
+                // создаем объект BinaryWriter
+                using (BinaryWriter writer = new BinaryWriter(File.Open(path, FileMode.OpenOrCreate)))
+                {
+                    // записываем в файл значение каждого поля структуры
+                    foreach (State s in states)
+                    {
+                        writer.Write(s.name);
+                        writer.Write(s.capital);
+                        writer.Write(s.area);
+                        writer.Write(s.people);
+                    }
+                }
+                // создаем объект BinaryReader
+                using (BinaryReader reader = new BinaryReader(File.Open(path, FileMode.Open)))
+                {
+                    // пока не достигнут конец файла
+                    // считываем каждое значение из файла
+                    while (reader.PeekChar() > -1)
+                    {
+                        string name = reader.ReadString();
+                        string capital = reader.ReadString();
+                        int area = reader.ReadInt32();
+                        double population = reader.ReadDouble();
+
+                        Console.WriteLine("Страна: {0}  столица: {1}  площадь {2} кв. км   численность населения: {3} млн. чел.",
+                            name, capital, area, population);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+        struct State
+        {
+            public string name;
+            public string capital;
+            public int area;
+            public double people;
+
+            public State(string n, string c, int a, double p)
+            {
+                name = n;
+                capital = c;
+                people = p;
+                area = a;
             }
         }
     }
