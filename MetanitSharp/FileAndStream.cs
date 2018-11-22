@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -46,6 +47,9 @@ namespace MetanitSharp
                     case 'b':
                         usingBinaryReader();
                         break;
+                    case 'z':
+                        usingGZip();
+                        break;
                     case 'x': return;
                 }
                 Console.ReadKey();
@@ -61,6 +65,7 @@ namespace MetanitSharp
             Console.WriteLine("S - чтение и запись в файл через FileStream");
             Console.WriteLine("M - StreamReader и StreamWriter");
             Console.WriteLine("B - BinaryReader и BinaryWriter");
+            Console.WriteLine("Z - архивация GZipStream");
             Console.WriteLine("X - выход из раздела");
         }
 
@@ -480,6 +485,55 @@ namespace MetanitSharp
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
+            }
+        }
+
+        static void usingGZip()
+        {
+            string sourceFile = "C://Metanit/autumn.bmp"; // исходный файл
+            string compressedFile = "C://Metanit/autumn.gz"; // сжатый файл
+            string targetFile = "C://Metanit/autumn_new.bmp"; // восстановленный файл
+
+            // создание сжатого файла
+            Compress(sourceFile, compressedFile);
+            // чтение из сжатого файла
+            Decompress(compressedFile, targetFile);
+        }
+
+        public static void Compress(string sourceFile, string compressedFile)
+        {
+            // поток для чтения исходного файла
+            using (FileStream sourceStream = new FileStream(sourceFile, FileMode.OpenOrCreate))
+            {
+                // поток для записи сжатого файла
+                using (FileStream targetStream = File.Create(compressedFile))
+                {
+                    // поток архивации
+                    using (GZipStream compressionStream = new GZipStream(targetStream, CompressionMode.Compress))
+                    {
+                        sourceStream.CopyTo(compressionStream); // копируем байты из одного потока в другой
+                        Console.WriteLine("Сжатие файла {0} завершено. Исходный размер: {1}  сжатый размер: {2}.",
+                            sourceFile, sourceStream.Length.ToString(), targetStream.Length.ToString());
+                    }
+                }
+            }
+        }
+
+        public static void Decompress(string compressedFile, string targetFile)
+        {
+            // поток для чтения из сжатого файла
+            using (FileStream sourceStream = new FileStream(compressedFile, FileMode.OpenOrCreate))
+            {
+                // поток для записи восстановленного файла
+                using (FileStream targetStream = File.Create(targetFile))
+                {
+                    // поток разархивации
+                    using (GZipStream decompressionStream = new GZipStream(sourceStream, CompressionMode.Decompress))
+                    {
+                        decompressionStream.CopyTo(targetStream);
+                        Console.WriteLine("Восстановлен файл: {0}", targetFile);
+                    }
+                }
             }
         }
         struct State
