@@ -45,8 +45,11 @@ namespace MetanitSharp
                     case 'f':
                         FileAndStream.Run();
                         break;
-                    case 's':
+                    case 'z':
                         Serialization.Run();
+                        break;
+                    case 's':
+                        Strings.Run();
                         break;
                 }
             }
@@ -63,7 +66,8 @@ namespace MetanitSharp
             Console.WriteLine("T - дополнительные возможности ООП");            
             Console.WriteLine("C - коллекции");
             Console.WriteLine("F - работа с потоками и файловой системой");
-            Console.WriteLine("S - сериализация");
+            Console.WriteLine("Z - сериализация");
+            Console.WriteLine("S - строки");
         }
     }
 }
