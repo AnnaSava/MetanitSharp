@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace MetanitSharp
@@ -37,6 +38,28 @@ namespace MetanitSharp
                         replace();
                         upperLower();
                         break;
+                    case 'f':
+                        format();
+                        moneyFormat();
+                        integerFormat();
+                        floatFormat();
+                        percentFormat();
+                        customFormat();
+                        toString();
+                        interpolation();
+                        break;
+                    case 'b':
+                        stringBuilder();
+                        stringBuilderMethods();
+                        break;
+                    case 'r':
+                        regex();
+                        regex2();
+                        regexPhone();
+                        regexPhoneNum();
+                        regexEmail();
+                        regexReplace();
+                        break;
                     case 'x': return;
                 }
                 Console.ReadKey();
@@ -48,8 +71,13 @@ namespace MetanitSharp
             Console.WriteLine("Нажмите клавишу для вывода информации");
             Console.WriteLine("S - использование строк");
             Console.WriteLine("M - методы работы со строками");
+            Console.WriteLine("F - форматирование строк");
+            Console.WriteLine("B - StringBuilder");
+            Console.WriteLine("R - регулярные выражения");
             Console.WriteLine("X - выход из раздела");
         }
+
+        #region Methods
 
         static void usingString()
         {
@@ -218,6 +246,218 @@ namespace MetanitSharp
 
             Console.WriteLine(hello.ToLower()); // hello world!
             Console.WriteLine(hello.ToUpper()); // HELLO WORLD!
+        }
+
+        #endregion
+
+        #region Format
+
+        static void format()
+        {
+            Person person = new Person { Name = "Tom", Age = 23 };
+
+            string output = String.Format("Имя: {0}  Возраст: {1}", person.Name, person.Age);
+            Console.WriteLine(output);
+        }
+
+        static void moneyFormat()
+        {
+            double number = 23.7;
+            string result = String.Format("{0:C}", number);
+            Console.WriteLine(result); // $ 23.7
+            string result2 = String.Format("{0:C2}", number);
+            Console.WriteLine(result2); // $ 23.70
+        }
+
+        static void integerFormat()
+        {
+            int number = 23;
+            string result = String.Format("{0:d}", number);
+            Console.WriteLine(result); // 23
+            string result2 = String.Format("{0:d4}", number);
+            Console.WriteLine(result2); // 0023
+        }
+
+        static void floatFormat()
+        {
+            int number = 23;
+            string result = String.Format("{0:f}", number);
+            Console.WriteLine(result); // 23,00
+
+            double number2 = 45.08;
+            string result2 = String.Format("{0:f4}", number2);
+            Console.WriteLine(result2); // 45,0800
+
+            double number3 = 25.07;
+            string result3 = String.Format("{0:f1}", number3);
+            Console.WriteLine(result2); // 25,1
+        }
+
+        static void percentFormat()
+        {
+            decimal number = 0.15345m;
+            Console.WriteLine("{0:P1}", number);// 15.3%
+        }
+
+        static void customFormat()
+        {
+            long number = 19876543210;
+            string result = String.Format("{0:+# (###) ###-##-##}", number);
+            Console.WriteLine(result); // +1 (987) 654-32-10
+        }
+
+        static void toString()
+        {
+            long number = 19876543210;
+            Console.WriteLine(number.ToString("+# (###) ###-##-##"));// +1 (987) 654-32-10
+
+            double money = 24.8;
+            Console.WriteLine(money.ToString("C2")); // $ 24,80
+        }
+
+        static void interpolation()
+        {
+            int x = 8;
+            int y = 7;
+            string result = $"{x} + {y} = {x + y}";
+            Console.WriteLine(result); // 8 + 7 = 15
+
+            long number = 19876543210;
+            Console.WriteLine($"{number:+# ### ### ## ##}"); // +1 987 654 32 10
+
+            Person person = new Person { Name = "Tom", Age = 23 };
+            Console.WriteLine($"Имя: {person.Name}  Возраст: {person.Age}");
+
+
+            Console.WriteLine($"Имя: {person.Name,-5} Возраст: {person.Age}"); // пробелы после
+            Console.WriteLine($"Имя: {person.Name,5} Возраст: {person.Age}"); // пробелы до
+
+            person = null;
+            string output = $"{person?.Name ?? "Имя по умолчанию"}";
+            Console.WriteLine(output);
+        }
+
+        #endregion
+
+        class Person
+        {
+            public string Name { get; set; }
+            public int Age { get; set; }
+        }
+
+        static void stringBuilder()
+        {
+            StringBuilder sb = new StringBuilder("Название: ");
+            Console.WriteLine("Длина строки: {0}", sb.Length); // 10
+            Console.WriteLine("Емкость строки: {0}", sb.Capacity); // 16
+
+            sb.Append(" Руководство");
+            Console.WriteLine("Длина строки: {0}", sb.Length); // 22
+            Console.WriteLine("Емкость строки: {0}", sb.Capacity); // 32
+
+            sb.Append(" по C#");
+            Console.WriteLine("Длина строки: {0}", sb.Length); // 28
+            Console.WriteLine("Емкость строки: {0}", sb.Capacity); // 32
+        }
+
+        static void stringBuilderMethods()
+        {
+            StringBuilder sb = new StringBuilder("Привет мир");
+            sb.Append("!");
+            sb.Insert(7, "компьютерный ");
+            Console.WriteLine(sb);
+
+            // заменяем слово
+            sb.Replace("мир", "world");
+            Console.WriteLine(sb);
+
+            // удаляем 13 символов, начиная с 7-го
+            sb.Remove(7, 13);
+            Console.WriteLine(sb);
+
+            // получаем строку из объекта StringBuilder
+            string s = sb.ToString();
+            Console.WriteLine(s);
+        }
+
+        static void regex()
+        {
+            string s = "Бык тупогуб, тупогубенький бычок, у быка губа бела была тупа";
+            Regex regex = new Regex(@"туп(\w*)");
+            MatchCollection matches = regex.Matches(s);
+            if (matches.Count > 0)
+            {
+                foreach (Match match in matches)
+                    Console.WriteLine(match.Value);
+            }
+            else
+            {
+                Console.WriteLine("Совпадений не найдено");
+            }
+
+
+        }
+
+        static void regex2()
+        {
+            string s = "Бык тупогуб, тупогубенький бычок, у быка губа бела была тупа";
+            Regex regex = new Regex(@"\w*губ\w*");
+
+            MatchCollection matches = regex.Matches(s);
+            if (matches.Count > 0)
+            {
+                foreach (Match match in matches)
+                    Console.WriteLine(match.Value);
+            }
+            else
+            {
+                Console.WriteLine("Совпадений не найдено");
+            }
+        }
+
+        static void regexPhone()
+        {
+            string s = "456-435-2318";
+            Regex regex = new Regex(@"\d{3}-\d{3}-\d{4}");
+
+            Console.WriteLine(regex.Match(s).Value);
+        }
+
+        static void regexPhoneNum()
+        {
+            string s = "456-435-2318";
+            Regex regex = new Regex("[0-9]{3}-[0-9]{3}-[0-9]{4}");
+
+            Console.WriteLine(regex.Match(s).Value);
+        }
+
+        static void regexEmail()
+        {
+            string pattern = @"^(?("")(""[^""]+?""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))" +
+                @"(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-z][-\w]*[0-9a-z]*\.)+[a-z0-9]{2,17}))$";
+
+            Console.WriteLine("Введите адрес электронной почты");
+            string email = Console.ReadLine();
+
+            if (Regex.IsMatch(email, pattern, RegexOptions.IgnoreCase))
+            {
+                Console.WriteLine("Email подтвержден");
+            }
+            else
+            {
+                Console.WriteLine("Некорректный email");
+            }
+        }
+
+        static void regexReplace()
+        {
+            string s = "Мама  мыла  раму. ";
+            string pattern = @"\s+";
+            string target = " ";
+            Regex regex = new Regex(pattern);
+            string result = regex.Replace(s, target);
+
+            Console.WriteLine(result);
         }
     }
 }
