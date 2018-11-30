@@ -51,6 +51,9 @@ namespace MetanitSharp
                     case 's':
                         Strings.Run();
                         break;
+                    case 'm':
+                        Memory.Run();
+                        break;
                 }
             }
         }
@@ -68,6 +71,7 @@ namespace MetanitSharp
             Console.WriteLine("F - работа с потоками и файловой системой");
             Console.WriteLine("Z - сериализация");
             Console.WriteLine("S - строки");
+            Console.WriteLine("M - сборка мусора, управление памятью, указатели");
         }
     }
 }

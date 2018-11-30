@@ -54,6 +54,7 @@
     <Compile Include="FileAndStream.cs" />
     <Compile Include="Interfaces.cs" />
     <Compile Include="InterfacesClasses.cs" />
+    <Compile Include="Memory.cs" />
     <Compile Include="OopClasses.cs" />
     <Compile Include="OopConcepts.cs" />
     <Compile Include="OopExtClasses.cs" />
