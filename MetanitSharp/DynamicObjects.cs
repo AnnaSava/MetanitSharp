@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MetanitSharpIronPyton;
+using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
@@ -31,6 +32,9 @@ namespace MetanitSharp
                     case 'd':
                         usingDynamicObject();
                         break;
+                    case 'p':
+                        IronPytonDemo.Display();
+                        break;
                     case 'x': return;
                 }
                 Console.ReadKey();
@@ -43,6 +47,7 @@ namespace MetanitSharp
             Console.WriteLine("O - динамические объекты");
             Console.WriteLine("E - ExpandoObject");
             Console.WriteLine("D - DynamicObject");
+            Console.WriteLine("P - IronPyton");
             Console.WriteLine("X - выход из раздела");
         }
 

@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetanitSharp", "MetanitShar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetanitSharpLib", "MetanitSharpLib\MetanitSharpLib.csproj", "{B0C7D7F1-BAA4-403B-A455-559AEC18D81B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetanitSharpIronPyton", "MetanitSharpIronPyton\MetanitSharpIronPyton.csproj", "{D11C8021-1ABA-499D-99B3-A2C552317794}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{B0C7D7F1-BAA4-403B-A455-559AEC18D81B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0C7D7F1-BAA4-403B-A455-559AEC18D81B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0C7D7F1-BAA4-403B-A455-559AEC18D81B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D11C8021-1ABA-499D-99B3-A2C552317794}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D11C8021-1ABA-499D-99B3-A2C552317794}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D11C8021-1ABA-499D-99B3-A2C552317794}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D11C8021-1ABA-499D-99B3-A2C552317794}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

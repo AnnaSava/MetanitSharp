@@ -74,6 +74,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MetanitSharpIronPyton\MetanitSharpIronPyton.csproj">
+      <Project>{d11c8021-1aba-499d-99b3-a2c552317794}</Project>
+      <Name>MetanitSharpIronPyton</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MetanitSharpLib\MetanitSharpLib.csproj">
       <Project>{b0c7d7f1-baa4-403b-a455-559aec18d81b}</Project>
       <Name>MetanitSharpLib</Name>
