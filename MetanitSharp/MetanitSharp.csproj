@@ -50,6 +50,7 @@
     <Compile Include="CollectionsClasses.cs" />
     <Compile Include="DelegatesAndEvents.cs" />
     <Compile Include="DelegatesClasses.cs" />
+    <Compile Include="DynamicObjects.cs" />
     <Compile Include="ExceptionsClasses.cs" />
     <Compile Include="ExceptionsHandling.cs" />
     <Compile Include="FileAndStream.cs" />

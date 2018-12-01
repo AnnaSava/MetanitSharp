@@ -54,6 +54,9 @@ namespace MetanitSharp
                     case 'm':
                         Memory.Run();
                         break;
+                    case 'y':
+                        DynamicObjects.Run();
+                        break;
                 }
             }
         }
@@ -72,6 +75,7 @@ namespace MetanitSharp
             Console.WriteLine("Z - сериализация");
             Console.WriteLine("S - строки");
             Console.WriteLine("M - сборка мусора, управление памятью, указатели");
+            Console.WriteLine("Y - динамические объекты");
         }
     }
 }
