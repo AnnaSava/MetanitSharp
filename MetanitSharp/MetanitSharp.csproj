@@ -21,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -57,7 +57,6 @@
     <Compile Include="Interfaces.cs" />
     <Compile Include="InterfacesClasses.cs" />
     <Compile Include="Memory.cs" />
-    <Compile Include="MemoryClasses.cs" />
     <Compile Include="OopClasses.cs" />
     <Compile Include="OopConcepts.cs" />
     <Compile Include="OopExtClasses.cs" />
@@ -81,6 +80,10 @@
     <ProjectReference Include="..\MetanitSharpLib\MetanitSharpLib.csproj">
       <Project>{b0c7d7f1-baa4-403b-a455-559aec18d81b}</Project>
       <Name>MetanitSharpLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MetanitSharpMemory\MetanitSharpMemory.csproj">
+      <Project>{10dcecc9-56f2-4f40-beb8-a364aac74a2b}</Project>
+      <Name>MetanitSharpMemory</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
