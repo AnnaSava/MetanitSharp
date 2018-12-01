@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetanitSharpLib", "MetanitS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetanitSharpIronPyton", "MetanitSharpIronPyton\MetanitSharpIronPyton.csproj", "{D11C8021-1ABA-499D-99B3-A2C552317794}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetanitSharpMemory", "MetanitSharpMemory\MetanitSharpMemory.csproj", "{10DCECC9-56F2-4F40-BEB8-A364AAC74A2B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetanitSharpUnsafe", "MetanitSharpUnsafe\MetanitSharpUnsafe.csproj", "{10DCECC9-56F2-4F40-BEB8-A364AAC74A2B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
