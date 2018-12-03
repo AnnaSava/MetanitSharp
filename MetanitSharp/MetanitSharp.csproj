@@ -59,6 +59,7 @@
     <Compile Include="Memory.cs" />
     <Compile Include="MemoryClasses.cs" />
     <Compile Include="Multithreading.cs" />
+    <Compile Include="MultithreadingClasses.cs" />
     <Compile Include="OopClasses.cs" />
     <Compile Include="OopConcepts.cs" />
     <Compile Include="OopExtClasses.cs" />

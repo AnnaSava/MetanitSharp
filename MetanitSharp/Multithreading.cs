@@ -25,6 +25,30 @@ namespace MetanitSharp
                     case 't':
                         usingThread();
                         break;
+                    case 'c':
+                        createThread();
+                        break;
+                    case 'm':
+                        multiThreadFromComments();
+                        break;
+                    case 'p':
+                        ParameterizedThread.Display();
+                        break;
+                    case 'a':
+                        ParameterizedWithArray.Display();
+                        break;
+                    case 'o':
+                        ParameterizedWithClass.Display();
+                        break;
+                    case 'q':
+                        ParameterizedTypeSafe.Display();
+                        break;
+                    case 'r':
+                        ThreadCommonResources.Display();
+                        break;
+                    case 'l':
+                        ThreadLocker.Display();
+                        break;
                     case 'x': return;
                 }
                 Console.ReadKey();
@@ -35,6 +59,14 @@ namespace MetanitSharp
         {
             Console.WriteLine("Нажмите клавишу для вывода информации");
             Console.WriteLine("T - класс Thread");
+            Console.WriteLine("C - создание потоков");
+            Console.WriteLine("M - несколько потоков в цикле");
+            Console.WriteLine("P - поток с параметром");
+            Console.WriteLine("A - поток с параметром в виде массива");
+            Console.WriteLine("O - поток с параметром в виде класса");
+            Console.WriteLine("Q - поток с методом из отдельного класса");
+            Console.WriteLine("R - потоки с общим ресурсом");
+            Console.WriteLine("L - блокировка потока");
             Console.WriteLine("X - выход из раздела");
         }
 
@@ -55,5 +87,44 @@ namespace MetanitSharp
             // получаем домен приложения
             Console.WriteLine("Домен приложения: {0}", Thread.GetDomain().FriendlyName);
         }
+
+        static void createThread()
+        {
+            // создаем новый поток
+            Thread myThread = new Thread(new ThreadStart(Count));
+            myThread.Start(); // запускаем поток
+
+            for (int i = 1; i < 9; i++)
+            {
+                Console.WriteLine($"Главный поток:\t{i * i}");
+                Thread.Sleep(300);
+            }
+        }
+
+        static void Count()
+        {
+            for (int i = 1; i < 9; i++)
+            {
+                Console.WriteLine($"\tВторой поток:\t{i * i}");
+                Thread.Sleep(400);
+            }
+        }
+
+        static void multiThreadFromComments()
+        {
+            Console.WriteLine("Несколько потоков в цикле");
+
+            for (int i = 0; i < 10; i++)
+            {
+                int j = i;
+                Thread tr = new Thread(() =>
+                {
+                    Console.WriteLine($"i={i}\tj={j}");
+                });
+
+                tr.Start();
+            }
+        }
+
     }
 }
