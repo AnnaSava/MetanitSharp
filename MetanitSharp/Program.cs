@@ -36,7 +36,7 @@ namespace MetanitSharp
                     case 'd':
                         DelegatesAndEvents.Run();
                         break;
-                    case 't':
+                    case 'n':
                         OopExtention.Run();
                         break;
                     case 'c':
@@ -57,6 +57,9 @@ namespace MetanitSharp
                     case 'y':
                         DynamicObjects.Run();
                         break;
+                    case 't':
+                        Multithreading.Run();
+                        break;
                 }
             }
         }
@@ -69,13 +72,14 @@ namespace MetanitSharp
             Console.WriteLine("E - обработка исключений");            
             Console.WriteLine("I - интерфейсы");
             Console.WriteLine("D - делегаты, события и лямбды");
-            Console.WriteLine("T - дополнительные возможности ООП");            
+            Console.WriteLine("N - дополнительные возможности ООП");            
             Console.WriteLine("C - коллекции");
             Console.WriteLine("F - работа с потоками и файловой системой");
             Console.WriteLine("Z - сериализация");
             Console.WriteLine("S - строки");
             Console.WriteLine("M - сборка мусора, управление памятью, указатели");
             Console.WriteLine("Y - динамические объекты");
+            Console.WriteLine("T - многопоточность");
         }
     }
 }
