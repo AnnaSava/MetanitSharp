@@ -191,4 +191,231 @@ namespace MetanitSharp
             }
         }
     }
+
+    class MonitorDemo
+    {
+        static int x = 0;
+        static object locker = new object();
+
+        public static void Display()
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                Thread myThread = new Thread(Count);
+                myThread.Name = "Поток " + i.ToString();
+                myThread.Start();
+            }
+        }
+
+        public static void Count()
+        {
+            try
+            {
+                Monitor.Enter(locker);
+                x = 1;
+                for (int i = 1; i < 5; i++)
+                {
+                    Console.WriteLine("{0}: {1}", Thread.CurrentThread.Name, x);
+                    x++;
+                    Thread.Sleep(100);
+                }
+            }
+            finally
+            {
+                Monitor.Exit(locker);
+            }
+        }
+    }
+
+    class AutoResetEventDemo
+    {
+        static AutoResetEvent waitHandler = new AutoResetEvent(true);
+        static int x = 0;
+
+        public static void Display()
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                Thread myThread = new Thread(Count);
+                myThread.Name = "Поток " + i.ToString();
+                myThread.Start();
+            }
+        }
+
+        public static void Count()
+        {
+            waitHandler.WaitOne();
+            x = 1;
+            for (int i = 1; i < 5; i++)
+            {
+                Console.WriteLine("{0}: {1}", Thread.CurrentThread.Name, x);
+                x++;
+                Thread.Sleep(100);
+            }
+            waitHandler.Set();
+        }
+    }
+
+    class MutexDemo
+    {
+        static Mutex mutexObj = new Mutex();
+        static int x = 0;
+
+        public static void Display()
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                Thread myThread = new Thread(Count);
+                myThread.Name = "Поток " + i.ToString();
+                myThread.Start();
+            }
+        }
+
+        public static void Count()
+        {
+            mutexObj.WaitOne();
+            x = 1;
+            for (int i = 1; i < 5; i++)
+            {
+                Console.WriteLine("{0}: {1}", Thread.CurrentThread.Name, x);
+                x++;
+                Thread.Sleep(100);
+            }
+            mutexObj.ReleaseMutex();
+        }
+    }
+
+    class SemaphoreDemo
+    {
+        public static void Display()
+        {
+            for (int i = 1; i < 6; i++)
+            {
+                Reader reader = new Reader(i);
+            }
+        }
+
+        class Reader
+        {
+            // создаем семафор
+            static Semaphore sem = new Semaphore(3, 3);
+            Thread myThread;
+            int count = 3;// счетчик чтения
+
+            public Reader(int i)
+            {
+                myThread = new Thread(Read);
+                myThread.Name = "Читатель " + i.ToString();
+                myThread.Start();
+            }
+
+            public void Read()
+            {
+                while (count > 0)
+                {
+                    sem.WaitOne();
+
+                    Console.WriteLine("{0} входит в библиотеку", Thread.CurrentThread.Name);
+
+                    Console.WriteLine("{0} читает", Thread.CurrentThread.Name);
+                    Thread.Sleep(1000);
+
+                    Console.WriteLine("{0} покидает библиотеку", Thread.CurrentThread.Name);
+                    sem.Release();
+
+                    count--;
+                    Thread.Sleep(1000);
+                }
+            }
+        }
+    }
+
+    class SemaphoreColor
+    {
+        public static void Display()
+        {
+            var colors = new ConsoleColor[] { ConsoleColor.Green, ConsoleColor.Cyan, ConsoleColor.Blue,
+                ConsoleColor.Yellow, ConsoleColor.Magenta};
+
+            for (int i = 0; i < colors.Length; i++)
+            {
+                Reader reader = new Reader(i + 1, colors[i]);
+            }
+        }
+
+        class Reader
+        {
+            // создаем семафор
+            static Semaphore sem = new Semaphore(3, 3);
+            Thread myThread;
+            int count = 3;// счетчик чтения
+            ConsoleColor color;
+            static object locker = new object();
+
+            public Reader(int i, ConsoleColor color)
+            {
+                this.color = color;
+                myThread = new Thread(Read);
+                myThread.Name = "Читатель " + i.ToString();
+                myThread.Start();
+            }
+
+            public void Read()
+            {
+                var c = color;
+                while (count > 0)
+                {
+                    sem.WaitOne();
+
+                    printAction($"{Thread.CurrentThread.Name} входит в библиотеку", c, count);
+
+                    printAction($"{Thread.CurrentThread.Name} читает", c);
+                    Thread.Sleep(1000);
+
+                    printAction($"{Thread.CurrentThread.Name} покидает библиотеку", c);
+                    sem.Release();
+
+                    count--;
+                    Thread.Sleep(1000);
+                }
+            }
+
+            void printAction(String text,  ConsoleColor _color, int _count = 0)
+            {
+                try
+                {
+                    Monitor.Enter(locker);
+                    Console.ForegroundColor = _color;
+                    if (_count > 0) text += $" {4 - _count}-й раз";
+                    Console.WriteLine(text);
+                }
+                finally
+                {
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Monitor.Exit(locker);
+                }
+            }
+        }
+    }
+
+    class TimerDemo
+    {
+        public static void Display()
+        {
+            int num = 0;
+            // устанавливаем метод обратного вызова
+            TimerCallback tm = new TimerCallback(Count);
+            // создаем таймер
+            Timer timer = new Timer(tm, num, 0, 2000);
+        }
+
+        public static void Count(object obj)
+        {
+            int x = (int)obj;
+            for (int i = 1; i < 9; i++, x++)
+            {
+                Console.WriteLine($"{i}. {x}*{i}={x * i}");
+            }
+        }
+    }
 }

@@ -22,13 +22,13 @@ namespace MetanitSharp
                 Console.WriteLine();
                 switch (key)
                 {
-                    case 't':
+                    case 'h':
                         usingThread();
                         break;
                     case 'c':
                         createThread();
                         break;
-                    case 'm':
+                    case 'y':
                         multiThreadFromComments();
                         break;
                     case 'p':
@@ -49,6 +49,27 @@ namespace MetanitSharp
                     case 'l':
                         ThreadLocker.Display();
                         break;
+                    case 'm':
+                        MonitorDemo.Display();
+                        break;
+                    case 'e':
+                        AutoResetEventDemo.Display();
+                        break;
+                    case 'u':
+                        MutexDemo.Display();
+                        break;
+                    case 'n':
+                        launchSingleApp();
+                        break;
+                    case 's':
+                        SemaphoreDemo.Display();
+                        break;
+                    case 'k':
+                        SemaphoreColor.Display();
+                        break;
+                    case 't':
+                        TimerDemo.Display();
+                        break;
                     case 'x': return;
                 }
                 Console.ReadKey();
@@ -58,15 +79,22 @@ namespace MetanitSharp
         static void printMenu()
         {
             Console.WriteLine("Нажмите клавишу для вывода информации");
-            Console.WriteLine("T - класс Thread");
+            Console.WriteLine("H - класс Thread");
             Console.WriteLine("C - создание потоков");
-            Console.WriteLine("M - несколько потоков в цикле");
+            Console.WriteLine("Y - несколько потоков в цикле");
             Console.WriteLine("P - поток с параметром");
             Console.WriteLine("A - поток с параметром в виде массива");
             Console.WriteLine("O - поток с параметром в виде класса");
             Console.WriteLine("Q - поток с методом из отдельного класса");
             Console.WriteLine("R - потоки с общим ресурсом");
             Console.WriteLine("L - блокировка потока");
+            Console.WriteLine("M - мониторы");
+            Console.WriteLine("E - AutoResetEvent");
+            Console.WriteLine("U - мьютексы");
+            Console.WriteLine("N - запуск только одной копии приложения");
+            Console.WriteLine("S - семафоры");
+            Console.WriteLine("K - семафоры, пример с цветом");
+            Console.WriteLine("T - таймер");
             Console.WriteLine("X - выход из раздела");
         }
 
@@ -126,5 +154,10 @@ namespace MetanitSharp
             }
         }
 
+        static void launchSingleApp()
+        {
+            System.Diagnostics.Process.Start("MetanitSharpMutexSingle.exe");
+            System.Diagnostics.Process.Start("MetanitSharpMutexSingle.exe");
+        }
     }
 }

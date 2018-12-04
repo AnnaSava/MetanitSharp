@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetanitSharpIronPyton", "Me
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetanitSharpUnsafe", "MetanitSharpUnsafe\MetanitSharpUnsafe.csproj", "{10DCECC9-56F2-4F40-BEB8-A364AAC74A2B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetanitSharpMutexSingle", "MetanitSharpMutexSingle\MetanitSharpMutexSingle.csproj", "{24A51098-FCA7-4647-9A4F-4F991B3852E6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{10DCECC9-56F2-4F40-BEB8-A364AAC74A2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{10DCECC9-56F2-4F40-BEB8-A364AAC74A2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{10DCECC9-56F2-4F40-BEB8-A364AAC74A2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24A51098-FCA7-4647-9A4F-4F991B3852E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24A51098-FCA7-4647-9A4F-4F991B3852E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24A51098-FCA7-4647-9A4F-4F991B3852E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24A51098-FCA7-4647-9A4F-4F991B3852E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
