@@ -60,6 +60,9 @@ namespace MetanitSharp
                     case 't':
                         Multithreading.Run();
                         break;
+                    case 'p':
+                        ParallelProgramming.Run();
+                        break;
                 }
             }
         }
@@ -80,6 +83,7 @@ namespace MetanitSharp
             Console.WriteLine("M - сборка мусора, управление памятью, указатели");
             Console.WriteLine("Y - динамические объекты");
             Console.WriteLine("T - многопоточность");
+            Console.WriteLine("P - параллельное программирование");
         }
     }
 }

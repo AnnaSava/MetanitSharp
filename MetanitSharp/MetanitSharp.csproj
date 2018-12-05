@@ -64,6 +64,8 @@
     <Compile Include="OopConcepts.cs" />
     <Compile Include="OopExtClasses.cs" />
     <Compile Include="OopExtention.cs" />
+    <Compile Include="ParallelProgramming.cs" />
+    <Compile Include="ParallelClasses.cs" />
     <Compile Include="PartialPerson.cs" />
     <Compile Include="PartialPersonAddition.cs" />
     <Compile Include="Program.cs" />
@@ -74,6 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MetanitSharpIronPyton\MetanitSharpIronPyton.csproj">
