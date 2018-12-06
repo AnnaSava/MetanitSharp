@@ -7,63 +7,26 @@ using System.Threading.Tasks;
 
 namespace MetanitSharp
 {
-    class TaskFromMethod
+    class ParallelInvoke
     {
         public static void Display()
         {
-            Task task = new Task(Show);
-            task.Start();
-
-            Console.WriteLine("Завершение метода Display");
+            Parallel.Invoke(Show,
+                () =>
+                {
+                    Console.WriteLine("Выполняется задача {0}", Task.CurrentId);
+                    Thread.Sleep(3000);
+                },
+                () => Factorial(5));
         }
 
         static void Show()
         {
-            Console.WriteLine("Начало работы метода Show");
-
-            Console.WriteLine("Завершение работы метода Show");
-        }
-    }
-
-    class TaskWait
-    {
-        public static void Display()
-        {
-            Task task = new Task(Show);
-            task.Start();
-            task.Wait();
-
-            Console.WriteLine("Завершение метода Display");
+            Console.WriteLine("Выполняется задача {0}", Task.CurrentId);
+            Thread.Sleep(3000);
         }
 
-        static void Show()
-        {
-            Console.WriteLine("Начало работы метода Show");
-
-            Console.WriteLine("Завершение работы метода Show");
-        }
-    }
-
-    class TaskReturn
-    {
-        public static void Display()
-        {
-            Task<int> task1 = new Task<int>(() => Factorial(5));
-            task1.Start();
-
-            Console.WriteLine($"Факториал числа 5 равен {task1.Result}");
-
-            Task<Book> task2 = new Task<Book>(() =>
-            {
-                return new Book { Title = "Война и мир", Author = "Л. Толстой" };
-            });
-            task2.Start();
-
-            Book b = task2.Result;
-            Console.WriteLine($"Название книги: {b.Title}, автор: {b.Author}");
-        }
-
-        static int Factorial(int x)
+        static void Factorial(int x)
         {
             int result = 1;
 
@@ -71,93 +34,189 @@ namespace MetanitSharp
             {
                 result *= i;
             }
-
-            return result;
-        }
-
-        public class Book
-        {
-            public string Title { get; set; }
-            public string Author { get; set; }
-        }
-    }
-
-    class TaskResult
-    {
-        public static void Display()
-        {
-            Task<string> taskHello = new Task<string>(Hello);
-            taskHello.Start();
-            Console.WriteLine("Main thread before Result");
-            Console.WriteLine(taskHello.Result);
-            Console.WriteLine("Main thread after Result");
-        }
-        static string Hello()
-        {
+            Console.WriteLine("Выполняется задача {0}", Task.CurrentId);
             Thread.Sleep(3000);
-            return "Hello world!";
+            Console.WriteLine("Результат {0}", result);
         }
     }
 
-    class ContinuationTask
+    class ParallelFor
     {
         public static void Display()
         {
-            Task task1 = new Task(() =>
-            {
-                Console.WriteLine("Id задачи: {0}", Task.CurrentId);
-            });
-
-            // задача продолжения
-            Task task2 = task1.ContinueWith(Show);
-
-            task1.Start();
-
-            // ждем окончания второй задачи
-            task2.Wait();
-            Console.WriteLine("Выполняется работа метода Display");
+            Parallel.For(1, 10, Factorial);
         }
 
-        static void Show(Task t)
+        static void Factorial(int x)
         {
-            Console.WriteLine("Id задачи: {0}", Task.CurrentId);
-            Console.WriteLine("Id предыдущей задачи: {0}", t.Id);
+            int result = 1;
+
+            for (int i = 1; i <= x; i++)
+            {
+                result *= i;
+            }
+            Console.WriteLine($"Задача {Task.CurrentId}\t Факториал {x} равен {result}");
             Thread.Sleep(3000);
         }
     }
 
-    class ContinuationTaskMany
+    class ParallelForEach
     {
         public static void Display()
         {
-            Task task1 = new Task(() =>
-            {
-                Console.WriteLine("task 1");
-                Console.WriteLine("Id задачи: {0}", Task.CurrentId);
-            });
-
-            // задача продолжения
-            Task task2 = task1.ContinueWith(Show);
-
-            Task task3 = task1.ContinueWith((Task t) =>
-            {
-                Console.WriteLine("task 3 after task 1");
-                Console.WriteLine($"Id задачи: {Task.CurrentId}\tId предыдущей задачи: {t.Id}");
-            });
-
-            Task task4 = task2.ContinueWith((Task t) =>
-            {
-                Console.WriteLine("task 4 after task 2");
-                Console.WriteLine($"Id задачи: {Task.CurrentId}\tId предыдущей задачи: {t.Id}");
-            });
-
-            task1.Start();
+            ParallelLoopResult result = Parallel.ForEach<int>(new List<int>() { 1, 3, 5, 8 },
+                Factorial);
         }
 
-        static void Show(Task t)
+        static void Factorial(int x)
         {
-            Console.WriteLine("Show");
-            Console.WriteLine($"Id задачи: {Task.CurrentId}\tId предыдущей задачи: {t.Id}");
+            int result = 1;
+
+            for (int i = 1; i <= x; i++)
+            {
+                result *= i;
+            }
+            Console.WriteLine($"Задача {Task.CurrentId}\t Факториал {x} равен {result}");
+            Thread.Sleep(3000);
+        }
+    }
+
+    class ParallelForBreak
+    {
+        public static void Display()
+        {
+            ParallelLoopResult result = Parallel.For(1, 10, Factorial);
+
+            if (!result.IsCompleted)
+                Console.WriteLine("Выполнение цикла завершено на итерации {0}",
+                                                result.LowestBreakIteration);
+        }
+
+        static void Factorial(int x, ParallelLoopState pls)
+        {
+            int result = 1;
+
+            for (int i = 1; i <= x; i++)
+            {
+                result *= i;
+                if (i == 5)
+                    pls.Break();
+            }
+            Console.WriteLine($"Задача {Task.CurrentId}\t Факториал {x} равен {result}");
+            Thread.Sleep(3000);
+        }
+    }
+
+    class Cancellation
+    {
+        public static void Display()
+        {
+            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
+            CancellationToken token = cancelTokenSource.Token;
+            int number = 6;
+
+            Task task1 = new Task(() =>
+            {
+                int result = 1;
+                for (int i = 1; i <= number; i++)
+                {
+                    if (token.IsCancellationRequested)
+                    {
+                        Console.WriteLine("Операция прервана токеном");
+                        return;
+                    }
+
+                    result *= i;
+                    Console.WriteLine("Факториал числа {0} равен {1}", i, result);
+                    Thread.Sleep(300);
+                }
+            });
+            task1.Start();
+
+            new Task(() =>
+            {
+                Thread.Sleep(1000);
+                cancelTokenSource.Cancel();
+            }).Start();
+
+        }
+    }
+
+    class CancellationExternal
+    {
+        public static void Display()
+        {
+            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
+            CancellationToken token = cancelTokenSource.Token;
+
+            Task task1 = new Task(() => Factorial(5, token));
+            task1.Start();
+
+            new Task(() =>
+            {
+                Thread.Sleep(1000);
+                cancelTokenSource.Cancel();
+            }).Start();
+        }
+
+        static void Factorial(int x, CancellationToken token)
+        {
+            int result = 1;
+            for (int i = 1; i <= x; i++)
+            {
+                if (token.IsCancellationRequested)
+                {
+                    Console.WriteLine("Операция прервана токеном");
+                    return;
+                }
+
+                result *= i;
+                Console.WriteLine("Факториал числа {0} равен {1}", i, result);
+                Thread.Sleep(300);
+            }
+        }
+    }
+
+    class CancellationParallel
+    {
+        public static void Display()
+        {
+            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
+            CancellationToken token = cancelTokenSource.Token;
+
+            new Task(() =>
+            {
+                Thread.Sleep(400);
+                cancelTokenSource.Cancel();
+            }).Start();
+
+            try
+            {
+                Parallel.ForEach<int>(new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8 },
+                                        new ParallelOptions { CancellationToken = token }, Factorial);
+                // или так
+                //Parallel.For(1, 8, new ParallelOptions { CancellationToken = token }, Factorial);
+            }
+            catch (OperationCanceledException ex)
+            {
+                Console.WriteLine("Операция прервана токеном");
+            }
+            finally
+            {
+                cancelTokenSource.Dispose();
+            }
+
+            Console.ReadLine();
+        }
+        static void Factorial(int x)
+        {
+            int result = 1;
+
+            for (int i = 1; i <= x; i++)
+            {
+                result *= i;
+            }
+            Console.WriteLine("Факториал числа {0} равен {1}", x, result);
             Thread.Sleep(3000);
         }
     }

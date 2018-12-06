@@ -73,6 +73,8 @@
     <Compile Include="Serialization.cs" />
     <Compile Include="SerializationClasses.cs" />
     <Compile Include="Strings.cs" />
+    <Compile Include="Tasks.cs" />
+    <Compile Include="TasksClasses.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

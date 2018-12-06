@@ -22,38 +22,29 @@ namespace MetanitSharp
                 Console.WriteLine();
                 switch (key)
                 {
-                    case 't':
-                        taskDemo();
-                        break;
-                    case 'm':
-                        TaskFromMethod.Display();
-                        break;
-                    case 'w':
-                        TaskWait.Display();
+                    case 'p':
+                        processorCount();
                         break;
                     case 'i':
-                        innerTask();
+                        ParallelInvoke.Display();
                         break;
-                    case 'h':
-                        innerTaskAttached();
+                    case 'f':
+                        ParallelFor.Display();
                         break;
-                    case 'a':
-                        tasksArray();
+                    case 'e':
+                        ParallelForEach.Display();
                         break;
-                    case 'l':
-                        taskWaitAll();
-                        break;
-                    case 'r':
-                        TaskReturn.Display();
-                        break;
-                    case 's':
-                        TaskResult.Display();
+                    case 'b':
+                        ParallelForBreak.Display();
                         break;
                     case 'c':
-                        ContinuationTask.Display();
+                        Cancellation.Display();
                         break;
-                    case 'y':
-                        ContinuationTaskMany.Display();
+                    case 'n':
+                        CancellationExternal.Display();
+                        break;
+                    case 'l':
+                        CancellationParallel.Display();
                         break;
                     case 'x': return;
                 }
@@ -64,98 +55,21 @@ namespace MetanitSharp
         static void printMenu()
         {
             Console.WriteLine("Нажмите клавишу для вывода информации");
-            Console.WriteLine("T - задачи Task");
-            Console.WriteLine("M - задача из метода");
-            Console.WriteLine("W - ожидание завершения задачи");
-            Console.WriteLine("I - вложенные задачи");
-            Console.WriteLine("H - вложенные прикрепленные задачи");
-            Console.WriteLine("A - массив задач");
-            Console.WriteLine("L - ожидание выполнения всех задач");
-            Console.WriteLine("R - возвращение результатов из задач");
-            Console.WriteLine("S - ожидание получения результата");
-            Console.WriteLine("C - задачи продолжения");
-            Console.WriteLine("Y - цепочки задач продолжения");
+            Console.WriteLine("Р - количество ядер");
+            Console.WriteLine("I - вызов задач Parallel.Invoke");
+            Console.WriteLine("F - цикл Parallel.For");
+            Console.WriteLine("E - цикл Parallel.ForEach");
+            Console.WriteLine("B - выход из цикла");
+            Console.WriteLine("C - отмена задачи");
+            Console.WriteLine("N - отмена задачи в отдельной функции");
+            Console.WriteLine("L - отмена параллельных операций");
             Console.WriteLine("X - выход из раздела");
         }
 
-        static void taskDemo()
+        static void processorCount()
         {
-            Task task1 = new Task(() => Console.WriteLine("Task1 is executed"));
-            task1.Start();
-
-            Task task2 = Task.Factory.StartNew(() => Console.WriteLine("Task2 is executed"));
-
-            Task task3 = Task.Run(() => Console.WriteLine("Task3 is executed"));
-        }       
-
-        static void innerTask()
-        {
-            var outer = Task.Factory.StartNew(() =>      // внешняя задача
-            {
-                Console.WriteLine("Outer task starting...");
-                var inner = Task.Factory.StartNew(() =>  // вложенная задача
-                {
-                    Console.WriteLine("Inner task starting...");
-                    Thread.Sleep(2000);
-                    Console.WriteLine("Inner task finished.");
-                });
-            });
-            outer.Wait(); // ожидаем выполнения внешней задачи
-            Console.WriteLine("End of innerTask");
+            Console.WriteLine($"Количество ядер {Environment.ProcessorCount}");
         }
 
-        static void innerTaskAttached()
-        {
-            var outer = Task.Factory.StartNew(() =>      // внешняя задача
-            {
-                Console.WriteLine("Outer task starting...");
-                var inner = Task.Factory.StartNew(() =>  // вложенная задача
-                {
-                    Console.WriteLine("Inner task starting...");
-                    Thread.Sleep(2000);
-                    Console.WriteLine("Inner task finished.");
-                }, TaskCreationOptions.AttachedToParent);
-            });
-            outer.Wait(); // ожидаем выполнения внешней задачи
-            Console.WriteLine("End of Main");
-        }
-
-        static void tasksArray()
-        {
-            Task[] tasks1 = new Task[3]
-            {
-                new Task(() => Console.WriteLine("First Task")),
-                new Task(() => Console.WriteLine("Second Task")),
-                new Task(() => Console.WriteLine("Third Task"))
-            };
-            foreach (var t in tasks1)
-                t.Start();
-
-            Task[] tasks2 = new Task[3];
-            int j = 1;
-            for (int i = 0; i < tasks2.Length; i++)
-                tasks2[i] = Task.Factory.StartNew(() => Console.WriteLine($"Task {j++}"));
-
-            Console.WriteLine("Завершение метода Main");
-        }
-
-        static void taskWaitAll()
-        {
-            Task[] tasks1 = new Task[3]
-            {
-                new Task(() => Console.WriteLine("First Task")),
-                new Task(() => Console.WriteLine("Second Task")),
-                new Task(() => Console.WriteLine("Third Task"))
-            };
-            foreach (var t in tasks1)
-                t.Start();
-
-            var i = Task.WaitAny(tasks1);
-            Console.WriteLine($"Одна из задач завершилась. Индекс = {i}");
-
-            Task.WaitAll(tasks1); // ожидаем завершения задач 
-            Console.WriteLine("Завершение метода Main");
-        }
-               
     }
 }
