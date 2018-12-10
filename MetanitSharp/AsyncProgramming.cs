@@ -51,6 +51,15 @@ namespace MetanitSharp
                     case 'e':
                         AsyncException.Display();
                         break;
+                    case 'u':
+                        AsyncExceptionIsFaulted.Display();
+                        break;
+                    case 'm':
+                        AsyncMultipleExceptions.Display();
+                        break;
+                    case 'y':
+                        AsyncCatchFinally.Display();
+                        break;
                     case 'x': return;
                 }
                 Console.ReadKey();
@@ -69,7 +78,10 @@ namespace MetanitSharp
             Console.WriteLine("G - возвращение значения внутри задачи");
             Console.WriteLine("V - возвращение ValueTask");
             Console.WriteLine("L - параллельный запуск задач");
-            Console.WriteLine("E - обработка исключений");
+            Console.WriteLine("E - обработка исключений");            
+            Console.WriteLine("U - свойство IsFaulted");
+            Console.WriteLine("M - обработка нескольких исключений");
+            Console.WriteLine("Y - await в блоках catch и finally");
             Console.WriteLine("X - выход из раздела");
         }
     }
