@@ -66,6 +66,9 @@ namespace MetanitSharp
                     case 'p':
                         ParallelProgramming.Run();
                         break;
+                    case 'a':
+                        AsyncProgramming.Run();
+                        break;
                 }
             }
         }
@@ -88,6 +91,7 @@ namespace MetanitSharp
             Console.WriteLine("T - многопоточность");
             Console.WriteLine("K - задачи");
             Console.WriteLine("P - параллельное программирование");
+            Console.WriteLine("A - асинхронное программирование");
         }
     }
 }
