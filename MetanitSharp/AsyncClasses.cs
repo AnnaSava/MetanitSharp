@@ -424,4 +424,115 @@ namespace MetanitSharp
             }
         }
     }
+
+    class AsyncCancellation
+    {
+        public static void Display()
+        {
+            CancellationTokenSource cts = new CancellationTokenSource();
+            CancellationToken token = cts.Token;
+            FactorialAsync(6, token);
+            Thread.Sleep(3000);
+            cts.Cancel();
+        }
+
+        static void Factorial(int n, CancellationToken token)
+        {
+            int result = 1;
+            for (int i = 1; i <= n; i++)
+            {
+                if (token.IsCancellationRequested)
+                {
+                    Console.WriteLine("Операция прервана токеном");
+                    return;
+                }
+                result *= i;
+                Console.WriteLine($"Факториал числа {i} равен {result}");
+                Thread.Sleep(1000);
+            }
+        }
+        // определение асинхронного метода
+        static async void FactorialAsync(int n, CancellationToken token)
+        {
+            if (token.IsCancellationRequested)
+                return;
+            await Task.Run(() => Factorial(n, token));
+        }
+    }
+
+    class AsyncDelegate
+    {
+        public static void Display()
+        {
+            ShowHandler handler = new ShowHandler(Show);
+
+            IAsyncResult resultObj = handler.BeginInvoke(null, null);
+
+            for (int i = 1; i <= 10; i++)
+            {
+                Console.WriteLine($"{i} Продолжается работа метода Display");
+                Thread.Sleep(500);
+            }
+            int result = handler.EndInvoke(resultObj);
+            Console.WriteLine("Результат равен {0}", result);
+        }
+
+        public delegate int ShowHandler();
+
+        static int Show()
+        {
+            Console.WriteLine("\tНачинается работа метода Show....");
+
+            int result = 0;
+            for (int i = 1; i < 10; i++)
+            {
+                result += i * i;
+            }
+            Thread.Sleep(3000);
+            Console.WriteLine("\tЗавершается работа метода Show....");
+            return result;
+        }
+    }
+
+    class AsyncDelegateParams
+    {
+        public static void Display()
+        {
+            ShowHandler handler = new ShowHandler(Show);
+
+            IAsyncResult resultObj = handler.BeginInvoke(10, new AsyncCallback(AsyncCompleted), "Асинхронные вызовы");
+
+            for (int i = 1; i <= 10; i++)
+            {
+                Console.WriteLine($"{i} Продолжается работа метода Display");
+                Thread.Sleep(500);
+            }
+
+            int res = handler.EndInvoke(resultObj);
+            Console.WriteLine("Результат: {0}", res);
+        }
+
+        public delegate int ShowHandler(int k);
+
+        static int Show(int k)
+        {
+            Console.WriteLine("Начинается работа метода Show....");
+
+            int result = 0;
+            for (int i = 1; i < 10; i++)
+            {
+                result += k * i;
+            }
+            Thread.Sleep(3000);
+            Console.WriteLine("Завершается работа метода Show....");
+            return result;
+        }
+
+        static void AsyncCompleted(IAsyncResult resObj)
+        {
+            string mes = (string)resObj.AsyncState;
+            Console.WriteLine(mes);
+            Console.WriteLine("Работа асинхронного делегата завершена");
+        }
+    }
 }

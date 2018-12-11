@@ -21,7 +21,7 @@ namespace MetanitSharp
                 Console.WriteLine();
                 switch (key)
                 {
-                    case 'd':
+                    case 'a':
                         AsyncFactorial.Display();
                         break;
                     case 'f':
@@ -60,6 +60,15 @@ namespace MetanitSharp
                     case 'y':
                         AsyncCatchFinally.Display();
                         break;
+                    case 'q':
+                        AsyncCancellation.Display();
+                        break;
+                    case 'd':
+                        AsyncDelegate.Display();
+                        break;
+                    case 'i':
+                        AsyncDelegateParams.Display();
+                        break;
                     case 'x': return;
                 }
                 Console.ReadKey();
@@ -69,7 +78,7 @@ namespace MetanitSharp
         static void printMenu()
         {
             Console.WriteLine("Нажмите клавишу для вывода информации");
-            Console.WriteLine("D - пример с факториалом");
+            Console.WriteLine("A - пример с факториалом");
             Console.WriteLine("F - пример с файлом");
             Console.WriteLine("P - передача параметров в асинхронный метод");
             Console.WriteLine("N - получение результата из асинхронной операции");
@@ -82,6 +91,9 @@ namespace MetanitSharp
             Console.WriteLine("U - свойство IsFaulted");
             Console.WriteLine("M - обработка нескольких исключений");
             Console.WriteLine("Y - await в блоках catch и finally");
+            Console.WriteLine("Q - отмена асинхронных операций");
+            Console.WriteLine("D - асинхронные делегаты");
+            Console.WriteLine("I - методы BeginInvoke и EndInvoke");
             Console.WriteLine("X - выход из раздела");
         }
     }
