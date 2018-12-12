@@ -41,6 +41,15 @@ namespace MetanitSharp
                     case 'i':
                         getInterfaces();
                         break;
+                    case 'a':
+                        getAssembly();
+                        break;
+                    case 's':
+                        useOuterAssembly();
+                        break;
+                    case 'r':
+                        getAttr();
+                        break;
                     case 'x': return;
                 }
                 Console.ReadKey();
@@ -56,6 +65,9 @@ namespace MetanitSharp
             Console.WriteLine("C - информация о конструкторах");
             Console.WriteLine("F - информация о полях и свойствах");
             Console.WriteLine("I - информация об интерфейсах");
+            Console.WriteLine("A - информация о сборке");
+            Console.WriteLine("S - динамическая загрузка сборки");
+            Console.WriteLine("R - получение атрибутов");
             Console.WriteLine("X - выход из раздела");
         }
 
@@ -204,5 +216,89 @@ namespace MetanitSharp
         interface IUser { }
 
         interface IHuman { }
+
+        static void getAssembly()
+        {
+            Assembly asm = Assembly.LoadFrom("MetanitSharpLib.dll");
+
+            Console.WriteLine(asm.FullName);
+            // получаем все типы из сборки TestConsole.exe
+            Type[] types = asm.GetTypes();
+            foreach (Type t in types)
+            {
+                Console.WriteLine(t.Name);
+            }
+        }
+
+        static void useOuterAssembly()
+        {
+            try
+            {
+                Assembly asm = Assembly.LoadFrom("MetanitSharpApp.exe");
+
+                Type t = asm.GetType("MetanitSharpApp.Program", true, true);
+
+                // создаем экземпляр класса Program
+                object obj = Activator.CreateInstance(t);
+
+                // получаем метод GetResult
+                MethodInfo method = t.GetMethod("GetResult");
+
+                // вызываем метод, передаем ему значения для параметров и получаем результат
+                object result = method.Invoke(obj, new object[] { 6, 100, 3 });
+                Console.WriteLine(result);
+
+                Console.WriteLine("Вызов метода Main");
+                method = t.GetMethod("Main", BindingFlags.DeclaredOnly
+                    | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
+
+                method.Invoke(obj, new object[] { new string[] { } });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        [AttributeUsage(AttributeTargets.Class)] // ограничение атрибута: может применяться только к классу
+        public class RoleInfoAttribute : System.Attribute
+        {
+            public string Name { get; set; }
+            public int Code { get; set; }
+
+            public RoleInfoAttribute()
+            { }
+
+            public RoleInfoAttribute(string name)
+            {
+                Name = name;
+            }
+        }
+
+        [RoleInfo("customer")]
+        public class Person
+        {
+            public string Name { get; set; }
+            public int Age { get; set; }
+            public Person(string n, int a)
+            {
+                Name = n;
+                Age = a;
+            }
+            private int Payment(int hours, int perhour)
+            {
+                return hours * perhour;
+            }
+        }
+
+        static void getAttr()
+        {
+            Type t = typeof(Person);
+            object[] attrs = t.GetCustomAttributes(false);
+            foreach (RoleInfoAttribute roleAttr in attrs)
+            {
+                Console.WriteLine(roleAttr.Name);
+            }
+        }
     }
 }
