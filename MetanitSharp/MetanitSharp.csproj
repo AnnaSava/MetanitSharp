@@ -78,6 +78,7 @@
     <Compile Include="PartialPersonAddition.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReflectionWork.cs" />
     <Compile Include="Serialization.cs" />
     <Compile Include="SerializationClasses.cs" />
     <Compile Include="Strings.cs" />

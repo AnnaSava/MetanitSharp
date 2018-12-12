@@ -69,6 +69,9 @@ namespace MetanitSharp
                     case 'a':
                         AsyncProgramming.Run();
                         break;
+                    case 'r':
+                        ReflectionWork.Run();
+                        break;
                 }
             }
         }
@@ -92,6 +95,7 @@ namespace MetanitSharp
             Console.WriteLine("K - задачи");
             Console.WriteLine("P - параллельное программирование");
             Console.WriteLine("A - асинхронное программирование");
+            Console.WriteLine("R - рефлексия");
         }
     }
 }
