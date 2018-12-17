@@ -64,6 +64,8 @@
     <Compile Include="FileAndStream.cs" />
     <Compile Include="Interfaces.cs" />
     <Compile Include="InterfacesClasses.cs" />
+    <Compile Include="Linq.cs" />
+    <Compile Include="LinqClasses.cs" />
     <Compile Include="Memory.cs" />
     <Compile Include="MemoryClasses.cs" />
     <Compile Include="Multithreading.cs" />
