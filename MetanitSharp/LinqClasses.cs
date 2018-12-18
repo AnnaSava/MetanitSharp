@@ -323,4 +323,238 @@ namespace MetanitSharp
             public int Age { get; set; }
         }
     }
+
+    class LinqGroup
+    {
+        public static void Display()
+        {
+            groupPhones();
+            groupPhonesCount();
+            groupNested();
+        }
+
+        static List<Phone> phones = new List<Phone>
+        {
+            new Phone {Name="Lumia 430", Company="Microsoft" },
+            new Phone {Name="Mi 5", Company="Xiaomi" },
+            new Phone {Name="LG G 3", Company="LG" },
+            new Phone {Name="iPhone 5", Company="Apple" },
+            new Phone {Name="Lumia 930", Company="Microsoft" },
+            new Phone {Name="iPhone 6", Company="Apple" },
+            new Phone {Name="Lumia 630", Company="Microsoft" },
+            new Phone {Name="LG G 4", Company="LG" }
+        };
+
+        static void groupPhones()
+        {
+            var phoneGroups = from phone in phones
+                              group phone by phone.Company;
+
+            foreach (IGrouping<string, Phone> g in phoneGroups)
+            {
+                Console.WriteLine(g.Key);
+                foreach (var t in g)
+                    Console.WriteLine(t.Name);
+                Console.WriteLine();
+            }
+
+            var phoneGroupsExt = phones.GroupBy(p => p.Company);
+        }
+
+        static void groupPhonesCount()
+        {
+            var phoneGroups = from phone in phones
+                              group phone by phone.Company into g
+                              select new { Name = g.Key, Count = g.Count() };
+            foreach (var group in phoneGroups)
+                Console.WriteLine("{0} : {1}", group.Name, group.Count);
+
+            var phoneGroupsExt = phones.GroupBy(p => p.Company)
+                        .Select(g => new { Name = g.Key, Count = g.Count() });
+        }
+
+        static void groupNested()
+        {
+            var phoneGroups = from phone in phones
+                              group phone by phone.Company into g
+                              select new
+                              {
+                                  Name = g.Key,
+                                  Count = g.Count(),
+                                  Phones = from p in g select p
+                              };
+            foreach (var group in phoneGroups)
+            {
+                Console.WriteLine("{0} : {1}", group.Name, group.Count);
+                foreach (Phone phone in group.Phones)
+                    Console.WriteLine(phone.Name);
+                Console.WriteLine();
+            }
+
+            var phoneGroupsExt = phones.GroupBy(p => p.Company)
+                        .Select(g => new
+                        {
+                            Name = g.Key,
+                            Count = g.Count(),
+                            Phones = g.Select(p => p)
+                        });
+        }
+
+        class Phone
+        {
+            public string Name { get; set; }
+            public string Company { get; set; }
+        }
+    }
+
+    class LinqJoin
+    {
+        public static void Display()
+        {
+            join();
+            groupJoin();
+            zip();
+        }
+
+        static List<Team> teams = new List<Team>()
+        {
+            new Team { Name = "Бавария", Country ="Германия" },
+            new Team { Name = "Барселона", Country ="Испания" }
+        };
+        static List<Player> players = new List<Player>()
+        {
+            new Player {Name="Месси", Team="Барселона"},
+            new Player {Name="Неймар", Team="Барселона"},
+            new Player {Name="Роббен", Team="Бавария"}
+        };
+
+        static void join()
+        {
+            var result = from pl in players
+                         join t in teams on pl.Team equals t.Name
+                         select new { Name = pl.Name, Team = pl.Team, Country = t.Country };
+
+            foreach (var item in result)
+                Console.WriteLine("{0} - {1} ({2})", item.Name, item.Team, item.Country);
+
+            var resultExt = players.Join(teams, // второй набор
+             p => p.Team, // свойство-селектор объекта из первого набора
+             t => t.Name, // свойство-селектор объекта из второго набора
+             (p, t) => new { Name = p.Name, Team = p.Team, Country = t.Country }); // результат
+        }
+
+        static void groupJoin()
+        {
+            var result = teams.GroupJoin(
+                        players, // второй набор
+                        t => t.Name, // свойство-селектор объекта из первого набора
+                        pl => pl.Team, // свойство-селектор объекта из второго набора
+                        (team, pls) => new  // результирующий объект
+                        {
+                            Name = team.Name,
+                            Country = team.Country,
+                            Players = pls.Select(p => p.Name)
+                        });
+
+            foreach (var team in result)
+            {
+                Console.WriteLine(team.Name);
+                foreach (string player in team.Players)
+                {
+                    Console.WriteLine(player);
+                }
+                Console.WriteLine();
+            }
+        }
+
+        static void zip()
+        {
+            List<Team> teams = new List<Team>()
+            {
+                new Team { Name = "Бавария", Country ="Германия" },
+                new Team { Name = "Барселона", Country ="Испания" },
+                new Team { Name = "Ювентус", Country ="Италия" }
+            };
+            List<Player> players = new List<Player>()
+            {
+                new Player {Name="Роббен", Team="Бавария"},
+                new Player {Name="Неймар", Team="Барселона"},
+                new Player {Name="Буффон", Team="Ювентус"}
+            };
+            var result2 = players.Zip(teams,
+                                      (player, team) => new
+                                      {
+                                          Name = player.Name,
+                                          Team = team.Name,
+                                          Country = team.Country
+                                      });
+            foreach (var player in result2)
+            {
+                Console.WriteLine("{0} - {1} ({2})", player.Name, player.Team, player.Country);
+            }
+        }
+
+        class Player
+        {
+            public string Name { get; set; }
+            public string Team { get; set; }
+        }
+        class Team
+        {
+            public string Name { get; set; }
+            public string Country { get; set; }
+        }
+    }
+
+    class LinqAllAny
+    {
+        public static void Display()
+        {
+            all();
+            any();
+        }
+
+        static List<User> users = new List<User>()
+        {
+            new User { Name = "Tom", Age = 23 },
+            new User { Name = "Sam", Age = 43 },
+            new User { Name = "Bill", Age = 35 }
+        };
+
+        static void all()
+        {
+            bool result1 = users.All(u => u.Age > 20); // true
+            if (result1)
+                Console.WriteLine("У всех пользователей возраст больше 20");
+            else
+                Console.WriteLine("Есть пользователи с возрастом меньше 20");
+
+            bool result2 = users.All(u => u.Name.StartsWith("T")); //false
+            if (result2)
+                Console.WriteLine("У всех пользователей имя начинается с T");
+            else
+                Console.WriteLine("Не у всех пользователей имя начинается с T");
+        }
+
+        static void any()
+        {
+            bool result1 = users.Any(u => u.Age < 20); //false
+            if (result1)
+                Console.WriteLine("Есть пользователи с возрастом меньше 20");
+            else
+                Console.WriteLine("У всех пользователей возраст больше 20");
+
+            bool result2 = users.Any(u => u.Name.StartsWith("T")); //true
+            if (result2)
+                Console.WriteLine("Есть пользователи, у которых имя начинается с T");
+            else
+                Console.WriteLine("Отсутствуют пользователи, у которых имя начинается с T");
+        }
+
+        class User
+        {
+            public string Name { get; set; }
+            public int Age { get; set; }
+        }
+    }
 }
