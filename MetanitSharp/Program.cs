@@ -81,6 +81,9 @@ namespace MetanitSharp
                     case 'q':
                         ParallelLinq.Run();
                         break;
+                    case 'w':
+                        ProcessesAndDomains.Run();
+                        break;
                 }
             }
         }
@@ -108,6 +111,8 @@ namespace MetanitSharp
             Console.WriteLine("L - LINQ (Language-Integrated Query)");
             Console.WriteLine("X - работа с XML");
             Console.WriteLine("Q - Parallel LINQ");
+            Console.WriteLine("W - процессы и домены приложения");
+        
         }
     }
 }

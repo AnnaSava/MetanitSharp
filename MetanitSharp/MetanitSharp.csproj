@@ -79,6 +79,7 @@
     <Compile Include="ParallelClasses.cs" />
     <Compile Include="PartialPerson.cs" />
     <Compile Include="PartialPersonAddition.cs" />
+    <Compile Include="ProcessesAndDomains.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionWork.cs" />
