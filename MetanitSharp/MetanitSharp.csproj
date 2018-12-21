@@ -74,6 +74,7 @@
     <Compile Include="OopConcepts.cs" />
     <Compile Include="OopExtClasses.cs" />
     <Compile Include="OopExtention.cs" />
+    <Compile Include="ParallelLinq.cs" />
     <Compile Include="ParallelProgramming.cs" />
     <Compile Include="ParallelClasses.cs" />
     <Compile Include="PartialPerson.cs" />

@@ -72,11 +72,14 @@ namespace MetanitSharp
                     case 'r':
                         ReflectionWork.Run();
                         break;
-                    case 'q':
+                    case 'l':
                         Linq.Run();
                         break;
-                    case 'l':
+                    case 'x':
                         XmlWork.Run();
+                        break;
+                    case 'q':
+                        ParallelLinq.Run();
                         break;
                 }
             }
@@ -102,8 +105,9 @@ namespace MetanitSharp
             Console.WriteLine("P - параллельное программирование");
             Console.WriteLine("A - асинхронное программирование");
             Console.WriteLine("R - рефлексия");
-            Console.WriteLine("Q - LINQ (Language-Integrated Query)");
-            Console.WriteLine("L - работа с XML");
+            Console.WriteLine("L - LINQ (Language-Integrated Query)");
+            Console.WriteLine("X - работа с XML");
+            Console.WriteLine("Q - Parallel LINQ");
         }
     }
 }
