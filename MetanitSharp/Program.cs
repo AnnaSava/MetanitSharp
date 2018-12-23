@@ -84,6 +84,9 @@ namespace MetanitSharp
                     case 'w':
                         ProcessesAndDomains.Run();
                         break;
+                    case 'j':
+                        DotNet.Run();
+                        break;
                 }
             }
         }
@@ -112,7 +115,7 @@ namespace MetanitSharp
             Console.WriteLine("X - работа с XML");
             Console.WriteLine("Q - Parallel LINQ");
             Console.WriteLine("W - процессы и домены приложения");
-        
+            Console.WriteLine("J - разные классы в .Net");
         }
     }
 }
