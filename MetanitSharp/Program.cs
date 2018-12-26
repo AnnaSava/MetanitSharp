@@ -87,6 +87,9 @@ namespace MetanitSharp
                     case 'j':
                         DotNet.Run();
                         break;
+                    case 'v':
+                        Validation.Run();
+                        break;
                 }
             }
         }
@@ -116,6 +119,7 @@ namespace MetanitSharp
             Console.WriteLine("Q - Parallel LINQ");
             Console.WriteLine("W - процессы и домены приложения");
             Console.WriteLine("J - разные классы в .Net");
+            Console.WriteLine("V - валидация модели");
         }
     }
 }
